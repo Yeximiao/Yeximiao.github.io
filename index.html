@@ -34,7 +34,6 @@
             background-image: url('avatar.jpg'); /* 确保头像文件和背景图像在同一路径下 */
             background-size: cover;
             background-position: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .profile {
@@ -59,36 +58,20 @@
         }
 
         .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-block;
             margin: 5px;
             padding: 10px 15px;
             font-size: 14px;
-            color: #fff;
-            border-radius: 5px;
+            color: #333; /* 默认链接颜色 */
             text-decoration: none;
-            transition: background-color 0.3s;
         }
 
         .social-links a.tiktok {
             background-color: #010101;
         }
 
-        .social-links a.tiktok:hover {
-            background-color: #333333;
-        }
-
         .social-links a.kook {
             background-color: #32CD32; /* 绿色背景 */
-        }
-
-        .social-links a.kook:hover {
-            background-color: #228B22; /* 深绿色背景 */
-        }
-
-        .social-links a.kook svg {
-            fill: #fff; /* 白色图标 */
         }
 
         .footer {
