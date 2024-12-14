@@ -90,6 +90,20 @@
         .social-links a.kook svg {
             fill: #fff; /* 白色图标 */
         }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ccc;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer span {
+            color: #999;
+        }
     </style>
 </head>
 <body>
@@ -105,5 +119,30 @@
             <a href="https://kook.vip/PvR2FC" class="kook">Kook</a>
         </div>
     </div>
+
+    <div class="footer">
+        <span id="current-time"></span> | 网站已存在 <span id="website-duration"></span>
+    </div>
+
+    <script>
+        // 设置网站开始时间
+        var startTime = new Date();
+        var startHours = 13; // 今天的13:00
+        startTime.setHours(startHours, 0, 0, 0);
+
+        function updateTime() {
+            var currentTime = new Date();
+            var duration = Math.floor((currentTime - startTime) / 1000); // 时间差（秒）
+            var hours = Math.floor(duration / 3600);
+            var minutes = Math.floor((duration % 3600) / 60);
+            var seconds = duration % 60;
+
+            document.getElementById('current-time').textContent = currentTime.toLocaleString(); // 当前时间
+            document.getElementById('website-duration').textContent = hours + '小时 ' + minutes + '分钟 ' + seconds + '秒'; // 网站存在时长
+        }
+
+        setInterval(updateTime, 1000); // 每秒刷新一次时间
+        updateTime(); // 初始化时显示时间
+    </script>
 </body>
 </html>
