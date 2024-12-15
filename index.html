@@ -96,7 +96,6 @@
             margin-top: 20px;
             padding: 10px;
             background-color: #f0f0f0;
-            border-top: none; /* 去除上边框 */
             font-size: 14px;
             color: #666;
         }
@@ -125,14 +124,16 @@
     </div>
 
     <script>
-        // 设置网站开始时间
-        var startTime = new Date();
-        var startHours = 13; // 今天的13:00
-        startTime.setHours(startHours, 0, 0, 0);
+        // 设置网站开始时间为 2024 年 12 月 14 日下午 13:00
+        var startTime = new Date(2024, 11, 14, 13, 0, 0); // 注意：月份从0开始，11代表12月
 
         function updateTime() {
             var currentTime = new Date();
             var duration = Math.floor((currentTime - startTime) / 1000); // 时间差（秒）
+
+            // 如果时间差小于0，设置为0，避免负值
+            if (duration < 0) duration = 0;
+
             var hours = Math.floor(duration / 3600);
             var minutes = Math.floor((duration % 3600) / 60);
             var seconds = duration % 60;
