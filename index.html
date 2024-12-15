@@ -11,9 +11,10 @@
             padding: 0;
             font-family: Arial, sans-serif;
             background-color: #f4f4f9; /* 默认背景色 */
-            background-image: url('background1.jpg'); /* 修改背景图像名称 */
+            background-image: url('background1.jpg'); /* 背景图像 */
             background-size: cover; /* 填充整个视口 */
             background-position: center; /* 居中显示 */
+            background-repeat: no-repeat; /* 不重复拼接 */
             color: #333;
         }
 
@@ -79,13 +80,15 @@
             text-align: center;
             margin-top: 20px;
             padding: 10px;
-            background-color: #f0f0f0;
+            background-color: rgba(240, 240, 240, 0.5); /* 半透明背景 */
             font-size: 14px;
             color: #666;
         }
 
         .footer span {
-            color: #999;
+            background-color: transparent; /* 背景透明 */
+            padding: 2px 5px;
+            border-radius: 5px;
         }
     </style>
 </head>
