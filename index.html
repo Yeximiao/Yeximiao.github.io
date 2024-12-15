@@ -87,38 +87,22 @@
             background-color: #228B22; /* 深绿色背景 */
         }
 
+        .social-links a.kook svg {
+            fill: #fff; /* 白色图标 */
+        }
+
         .footer {
             text-align: center;
             margin-top: 20px;
             padding: 10px;
             background-color: #f0f0f0;
+            border-top: none; /* 去除上边框 */
             font-size: 14px;
             color: #666;
         }
 
         .footer span {
             color: #999;
-        }
-
-        /* 播放按钮样式 */
-        .music-controls {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .music-controls button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        .music-controls button:hover {
-            background-color: #45a049;
         }
     </style>
 </head>
@@ -134,10 +118,6 @@
             <a href="https://v.douyin.com/iUr1sts2/" class="tiktok">抖音</a>
             <a href="https://kook.vip/PvR2FC" class="kook">Kook</a>
         </div>
-        <!-- 背景音乐控制按钮 -->
-        <div class="music-controls">
-            <button id="music-toggle">暂停音乐</button>
-        </div>
     </div>
 
     <div class="footer">
@@ -145,42 +125,11 @@
     </div>
 
     <!-- 背景音乐 -->
-    <audio id="background-music" autoplay loop>
-        <source src="music.mp3" type="audio/mpeg">
-        您的浏览器不支持音频播放。
+    <audio autoplay loop>
+        <source src="background.ogg" type="audio/ogg">
+        您的浏览器不支持音频元素。
     </audio>
 
     <script>
         // 设置网站开始时间
-        const startTime = new Date(2024, 11, 14, 13, 0, 0); // 注意月份从 0 开始计数
-
-        function updateTime() {
-            const currentTime = new Date();
-            const duration = Math.floor((currentTime - startTime) / 1000); // 时间差（秒）
-            const hours = Math.floor(duration / 3600);
-            const minutes = Math.floor((duration % 3600) / 60);
-            const seconds = duration % 60;
-
-            document.getElementById('current-time').textContent = currentTime.toLocaleString();
-            document.getElementById('website-duration').textContent = hours + '小时 ' + minutes + '分钟 ' + seconds + '秒';
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        // 背景音乐控制
-        const audio = document.getElementById('background-music');
-        const toggleButton = document.getElementById('music-toggle');
-
-        toggleButton.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                toggleButton.textContent = '暂停音乐';
-            } else {
-                audio.pause();
-                toggleButton.textContent = '播放音乐';
-            }
-        });
-    </script>
-</body>
-</html>
+        var startTime = new Date(2024,
