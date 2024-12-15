@@ -104,40 +104,9 @@
         .footer span {
             color: #999;
         }
-
-        .music-controls {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .music-controls button {
-            margin: 0 5px;
-            padding: 5px 10px;
-            font-size: 14px;
-            color: #fff;
-            background-color: #333;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .music-controls button:hover {
-            background-color: #555;
-        }
-
-        .music-controls span {
-            font-size: 24px; /* 更大字号 */
-        }
-
-        .status {
-            text-align: center;
-            margin-top: 10px;
-            color: #ff0000; /* 默认错误状态红色 */
-        }
     </style>
 </head>
-<body onload="initializeMusic()">
+<body>
     <div class="container">
         <div class="avatar"></div>
         <div class="profile">
@@ -151,47 +120,11 @@
         </div>
     </div>
 
-    <div class="music-controls">
-        <button id="playPause" onclick="togglePlayPause()">播放</button>
-        <span id="musicStatus">×</span> <!-- 显示音乐状态 -->
-        <div class="status"></div>
-    </div>
-
     <div class="footer">
         <span id="current-time"></span> | 网站已存在 <span id="website-duration"></span>
     </div>
 
-    <audio id="background-music" src="music.ogg" preload="auto"></audio>
-
     <script>
-        var music = document.getElementById('background-music');
-        var playPauseButton = document.getElementById('playPause');
-        var musicStatus = document.getElementById('musicStatus');
-        var status = document.querySelector('.status');
-
-        function initializeMusic() {
-            music.play(); // 自动播放音乐
-            playPauseButton.textContent = '暂停';
-            musicStatus.textContent = '✓'; // 音乐已播放状态
-        }
-
-        function togglePlayPause() {
-            if (music.paused) {
-                music.play();
-                playPauseButton.textContent = '暂停';
-                musicStatus.textContent = '✓';
-                status.textContent = ''; // 清除错误状态
-            } else {
-                music.pause();
-                playPauseButton.textContent = '播放';
-                musicStatus.textContent = '×';
-            }
-        }
-
-        music.addEventListener('error', function() {
-            status.textContent = '无法播放音乐，请检查文件路径或格式是否正确。';
-        });
-
         // 设置网站开始时间
         var startTime = new Date('2024-12-14T13:00:00');
 
