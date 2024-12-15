@@ -126,10 +126,27 @@
 
     <!-- 背景音乐 -->
     <audio autoplay loop>
-        <source src="background.ogg" type="audio/ogg">
+        <source src="music.ogg" type="audio/ogg">
         您的浏览器不支持音频元素。
     </audio>
 
     <script>
         // 设置网站开始时间
-        var startTime = new Date(2024,
+        var startTime = new Date(2024, 11, 14, 13, 0, 0); // 2024年12月14日下午1点
+
+        function updateTime() {
+            var currentTime = new Date();
+            var duration = Math.floor((currentTime - startTime) / 1000); // 时间差（秒）
+            var hours = Math.floor(duration / 3600);
+            var minutes = Math.floor((duration % 3600) / 60);
+            var seconds = duration % 60;
+
+            document.getElementById('current-time').textContent = currentTime.toLocaleString(); // 当前时间
+            document.getElementById('website-duration').textContent = hours + '小时 ' + minutes + '分钟 ' + seconds + '秒'; // 网站存在时长
+        }
+
+        setInterval(updateTime, 1000); // 每秒刷新一次时间
+        updateTime(); // 初始化时显示时间
+    </script>
+</body>
+</html>
