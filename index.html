@@ -87,10 +87,6 @@
             background-color: #228B22; /* 深绿色背景 */
         }
 
-        .social-links a.kook svg {
-            fill: #fff; /* 白色图标 */
-        }
-
         .footer {
             text-align: center;
             margin-top: 20px;
@@ -102,6 +98,27 @@
 
         .footer span {
             color: #999;
+        }
+
+        /* 播放按钮样式 */
+        .music-controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .music-controls button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .music-controls button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -117,33 +134,53 @@
             <a href="https://v.douyin.com/iUr1sts2/" class="tiktok">抖音</a>
             <a href="https://kook.vip/PvR2FC" class="kook">Kook</a>
         </div>
+        <!-- 背景音乐控制按钮 -->
+        <div class="music-controls">
+            <button id="music-toggle">暂停音乐</button>
+        </div>
     </div>
 
     <div class="footer">
         <span id="current-time"></span> | 网站已存在 <span id="website-duration"></span>
     </div>
 
+    <!-- 背景音乐 -->
+    <audio id="background-music" autoplay loop>
+        <source src="music.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
     <script>
-        // 设置网站开始时间为 2024 年 12 月 14 日下午 13:00
-        var startTime = new Date(2024, 11, 14, 13, 0, 0); // 注意：月份从0开始，11代表12月
+        // 设置网站开始时间
+        const startTime = new Date(2024, 11, 14, 13, 0, 0); // 注意月份从 0 开始计数
 
         function updateTime() {
-            var currentTime = new Date();
-            var duration = Math.floor((currentTime - startTime) / 1000); // 时间差（秒）
+            const currentTime = new Date();
+            const duration = Math.floor((currentTime - startTime) / 1000); // 时间差（秒）
+            const hours = Math.floor(duration / 3600);
+            const minutes = Math.floor((duration % 3600) / 60);
+            const seconds = duration % 60;
 
-            // 如果时间差小于0，设置为0，避免负值
-            if (duration < 0) duration = 0;
-
-            var hours = Math.floor(duration / 3600);
-            var minutes = Math.floor((duration % 3600) / 60);
-            var seconds = duration % 60;
-
-            document.getElementById('current-time').textContent = currentTime.toLocaleString(); // 当前时间
-            document.getElementById('website-duration').textContent = hours + '小时 ' + minutes + '分钟 ' + seconds + '秒'; // 网站存在时长
+            document.getElementById('current-time').textContent = currentTime.toLocaleString();
+            document.getElementById('website-duration').textContent = hours + '小时 ' + minutes + '分钟 ' + seconds + '秒';
         }
 
-        setInterval(updateTime, 1000); // 每秒刷新一次时间
-        updateTime(); // 初始化时显示时间
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 背景音乐控制
+        const audio = document.getElementById('background-music');
+        const toggleButton = document.getElementById('music-toggle');
+
+        toggleButton.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                toggleButton.textContent = '暂停音乐';
+            } else {
+                audio.pause();
+                toggleButton.textContent = '播放音乐';
+            }
+        });
     </script>
 </body>
 </html>
