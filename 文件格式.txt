@@ -1,0 +1,10 @@
+your-website/
+├── index.html
+├── css/
+│   ├── style.css       # 全局基础样式
+├── js/
+│   ├── main.js         # 主JavaScript功能
+├── images/
+│   ├── avatar1.jpg         # 头像
+│   ├── background1.jpg         # 背景图
+└──

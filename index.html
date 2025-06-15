@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夜袭喵的个人主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 加载状态 -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">夜袭喵的个人空间</div>
+        <div class="loading-subtext">正在加载资源...</div>
+    </div>
+    
+    <!-- 背景效果 -->
+    <div class="background-effects" id="backgroundEffects">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+    
+    <!-- 错误提示 -->
+    <div class="image-error" id="imageError">
+        <i class="fas fa-exclamation-triangle"></i> 背景图加载失败，使用默认背景
+    </div>
+    
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 名片区域 -->
+        <div class="card-container">
+            <div class="avatar">
+                <img src="images/avatar1.jpg" alt="夜袭喵头像" onerror="this.src='https://via.placeholder.com/180x180?text=Avatar+Placeholder'">
+            </div>
+            
+            <div class="profile">
+                <h1>夜袭喵</h1>
+                <div class="profile-line">
+                    <span>练枪魔怔人</span>
+                    <div class="divider"></div>
+                    <span>FPS游戏狂热爱好者</span>
+                </div>
+                <p>一个追求极致操作的少年</p>
+            </div>
+            
+            <!-- 游戏标签 -->
+            <div class="game-tags">
+                <div class="game-tag">Aimlab</div>
+                <div class="game-tag">KovaaK's</div>
+                <div class="game-tag">TheFinals</div>
+                <div class="game-tag">CS2</div>
+                <div class="game-tag">APEX</div>
+            </div>
+            
+            <!-- 社交链接 -->
+            <div class="social-links">
+                <a href="https://steamcommunity.com/id/Yeximiao/" class="steam" target="_blank">
+                    <i class="fab fa-steam"></i> Steam主页
+                </a>
+                <a href="https://v.douyin.com/iUr1sts2/" class="tiktok" target="_blank">
+                    <i class="fab fa-tiktok"></i> 抖音频道
+                </a>
+                <a href="https://kook.vip/PvR2FC" class="kook" target="_blank">
+                    <i class="fas fa-headphones-alt"></i> Kook语音
+                </a>
+            </div>
+        </div>
+        
+        <!-- 页脚 - 网站存在时间 -->
+        <div class="info-footer">
+            <span id="current-time"></span> | 网站已运行 <span id="website-duration"></span>
+        </div>
+        
+        <!-- 阻力区域 -->
+        <div class="resistance-zone">
+            <div class="resistance-bar"></div>
+            <div class="resistance-text">继续向下探索</div>
+        </div>
+        
+        <!-- 阻力提示 -->
+        <div class="resistance-hint">
+            <i class="fas fa-chevron-down"></i> 用力向下滑动查看更多内容
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="content-section">
+            <h2 class="section-title">关于我</h2>
+            
+            <!-- 游戏外设部分 -->
+            <div class="equipment-showcase">
+                <h3 class="equipment-title">游戏外设</h3>
+                <div class="equipment-grid">
+                    <div class="equipment-item">
+                        <div class="equipment-icon">
+                            <i class="fas fa-keyboard"></i>
+                        </div>
+                        <div class="equipment-info">
+                            <h4>宁芝Mini84 V6 Pro</h4>
+                            <p>静电容键盘，35g压力克数，极致响应速度</p>
+                        </div>
+                    </div>
+                    <div class="equipment-item">
+                        <div class="equipment-icon">
+                            <i class="fas fa-mouse"></i>
+                        </div>
+                        <div class="equipment-info">
+                            <h4>ATK猎空F1探索版</h4>
+                            <p>轻量化设计，PAW3395传感器，8000Hz轮询率</p>
+                        </div>
+                    </div>
+                    <div class="equipment-item">
+                        <div class="equipment-icon">
+                            <i class="fas fa-headphones"></i>
+                        </div>
+                        <div class="equipment-info">
+                            <h4>弱水时砂静海</h4>
+                            <p>入耳式监听耳机，精准定位脚步声，HiFi级音质</p>
+                        </div>
+                    </div>
+                    <div class="equipment-item">
+                        <div class="equipment-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="equipment-info">
+                            <h4>飓风二</h4>
+                            <p>头戴式游戏耳机，7.1虚拟环绕声，舒适佩戴体验</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 分隔线 -->
+            <div class="section-divider"></div>
+            
+            <!-- 游戏内容部分 -->
+            <div class="content-grid">
+                <a href="#" class="content-card">
+                    <i class="fas fa-gamepad"></i>
+                    <h3>游戏攻略</h3>
+                    <p>分享FPS游戏技巧、地图攻略和武器评测，提升你的游戏水平</p>
+                </a>
+                
+                <a href="#" class="content-card">
+                    <i class="fas fa-video"></i>
+                    <h3>精彩集锦</h3>
+                    <p>展示游戏中的高光时刻和精彩操作，学习顶级玩家的技巧</p>
+                </a>
+                
+                <a href="#" class="content-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>训练计划</h3>
+                    <p>定制化的练枪计划和提升方案，助你成为顶尖玩家</p>
+                </a>
+                
+                <a href="#" class="content-card">
+                    <i class="fas fa-users"></i>
+                    <h3>社区互动</h3>
+                    <p>加入我们的游戏社区，一起开黑交流，分享游戏心得</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 导航按钮 -->
+    <div class="nav-buttons" id="navButtons">
+        <div class="nav-btn" id="toTopBtn">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+        <div class="nav-btn" id="toBottomBtn">
+            <i class="fas fa-arrow-down"></i>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+</body>
+</html>
