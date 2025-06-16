@@ -12,6 +12,22 @@ const navButtons = document.getElementById('navButtons');
 const loading = document.getElementById('loading');
 const backgroundEffects = document.getElementById('backgroundEffects');
 const imageError = document.getElementById('imageError');
+const imageBackup = document.getElementById('imageBackup');
+const avatarImg = document.getElementById('avatarImg');
+const avatarLoading = document.getElementById('avatarLoading');
+
+// 图片基础路径和备用源
+const localImagePath = 'images/';
+const backupImageBase = 'https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/';
+
+// 图片资源
+const imageResources = {
+    avatar: 'avatar1.jpg',
+    background: 'background1.jpg'
+};
+
+// 缓存控制变量
+let cacheBuster = new Date().getTime();
 
 // 更新网站存在时间
 function updateTime() {
@@ -38,7 +54,7 @@ function updateTime() {
 // 阻力效果实现
 let lastScrollTop = 0;
 let resistanceActive = false;
-let resistanceThreshold = 150; // 阻力生效的滚动阈值
+let resistanceThreshold = 150;
 let resistanceProgress = 0;
 
 function handleScroll() {
@@ -47,22 +63,15 @@ function handleScroll() {
     const resistanceZoneTop = resistanceZone.getBoundingClientRect().top;
     const windowHeight = window.innerHeight;
     
-    // 计算阻力进度（当阻力区域在视口底部时进度为0，在顶部时进度为100%）
     resistanceProgress = 1 - Math.max(0, Math.min(1, resistanceZoneTop / windowHeight));
-    
-    // 更新阻力条
     resistanceBar.style.setProperty('--progress', resistanceProgress * 100 + '%');
     
-    // 当阻力区域进入视口时激活阻力效果
     if (resistanceZoneTop < windowHeight && resistanceZoneTop > 0) {
         resistanceActive = true;
         resistanceHint.style.opacity = '1';
         
-        // 计算滚动阻力
         const scrollDelta = scrollTop - lastScrollTop;
-        
-        if (scrollDelta > 0) { // 向下滚动
-            // 应用阻力效果
+        if (scrollDelta > 0) {
             window.scrollBy(0, -scrollDelta * (1 - resistanceProgress));
         }
     } else {
@@ -70,7 +79,6 @@ function handleScroll() {
         resistanceHint.style.opacity = '0';
     }
     
-    // 控制导航按钮显示
     if (scrollTop > resistanceZone.offsetTop - windowHeight/2) {
         navButtons.style.opacity = '1';
     } else {
@@ -80,31 +88,80 @@ function handleScroll() {
     lastScrollTop = scrollTop;
 }
 
-// 检查背景图加载状态
-function checkBackgroundImage() {
-    const img = new Image();
-    img.src = 'images/background1.jpg';
+// 生成带时间戳的URL
+function getCacheBustedUrl(baseUrl, filename) {
+    return `${baseUrl}${filename}?_=${cacheBuster}`;
+}
+
+// 加载图片函数（带缓存清除功能）
+function loadImage(element, imageType, isBackground = false) {
+    const localPath = getCacheBustedUrl(localImagePath, imageResources[imageType]);
+    const backupPath = getCacheBustedUrl(backupImageBase, imageResources[imageType]);
     
-    img.onload = function() {
-        // 图片加载成功
-        console.log('背景图加载成功');
-        loading.style.opacity = '0';
-        loading.style.visibility = 'hidden';
+    // 先尝试加载本地图片
+    const testImage = new Image();
+    testImage.onload = function() {
+        if (isBackground) {
+            backgroundEffects.style.backgroundImage = `url('${localPath}'), linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)`;
+        } else {
+            element.src = localPath;
+        }
+        if (imageType === 'avatar') {
+            avatarLoading.style.display = 'none';
+        }
     };
     
-    img.onerror = function() {
-        // 图片加载失败
-        console.error('背景图加载失败');
-        imageError.style.display = 'block';
-        backgroundEffects.style.background = 'linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)';
+    testImage.onerror = function() {
+        // 本地图片加载失败，尝试备用源
+        const backupTest = new Image();
+        backupTest.onload = function() {
+            if (isBackground) {
+                backgroundEffects.style.backgroundImage = `url('${backupPath}'), linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)`;
+            } else {
+                element.src = backupPath;
+            }
+            showBackupNotice(`使用备用${imageType === 'avatar' ? '头像' : '背景'}图片`);
+            if (imageType === 'avatar') {
+                avatarLoading.style.display = 'none';
+            }
+        };
         
-        // 3秒后隐藏错误提示
-        setTimeout(() => {
-            imageError.style.display = 'none';
-            loading.style.opacity = '0';
-            loading.style.visibility = 'hidden';
-        }, 3000);
+        backupTest.onerror = function() {
+            // 备用源也失败，使用最后备方案
+            if (isBackground) {
+                backgroundEffects.style.backgroundImage = 'linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)';
+                showErrorNotice('背景图片加载失败');
+            } else {
+                element.src = getCacheBustedUrl(
+                    'https://cdn.pixabay.com/photo/2019/11/09/20/57/german-shepherd-4614451_1280.jpg'
+                );
+                showBackupNotice('使用默认头像图片');
+                avatarLoading.style.display = 'none';
+            }
+        };
+        
+        backupTest.src = backupPath;
     };
+    
+    testImage.src = localPath;
+}
+
+// 显示备份提示
+function showBackupNotice(message) {
+    imageBackup.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+    imageBackup.style.display = 'block';
+    setTimeout(() => {
+        imageBackup.style.display = 'none';
+    }, 3000);
+}
+
+// 显示错误提示
+function showErrorNotice(message) {
+    imageError.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+    imageError.style.display = 'block';
+    setTimeout(() => {
+        imageError.style.display = 'none';
+    }, 5000);
 }
 
 // 初始化页面
@@ -112,6 +169,10 @@ function initPage() {
     // 设置时间更新
     updateTime();
     setInterval(updateTime, 1000);
+    
+    // 设置图片
+    loadImage(avatarImg, 'avatar');
+    loadImage(null, 'background', true);
     
     // 事件监听器
     window.addEventListener('scroll', handleScroll);
@@ -141,8 +202,11 @@ function initPage() {
     // 初始阻力条宽度
     resistanceBar.style.setProperty('--progress', '0%');
     
-    // 检查背景图加载状态
-    checkBackgroundImage();
+    // 隐藏加载状态
+    setTimeout(() => {
+        loading.style.opacity = '0';
+        loading.style.visibility = 'hidden';
+    }, 1500);
 }
 
 // 页面加载完成后初始化
