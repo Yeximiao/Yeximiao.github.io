@@ -24,7 +24,12 @@
     
     <!-- 错误提示 -->
     <div class="image-error" id="imageError">
-        <i class="fas fa-exclamation-triangle"></i> 背景图加载失败，使用默认背景
+        <i class="fas fa-exclamation-triangle"></i> 图片加载失败，使用默认背景
+    </div>
+    
+    <!-- 备份提示 -->
+    <div class="image-backup" id="imageBackup">
+        <i class="fas fa-info-circle"></i> 使用备用图片源
     </div>
     
     <!-- 主容器 -->
@@ -32,7 +37,8 @@
         <!-- 名片区域 -->
         <div class="card-container">
             <div class="avatar">
-                <img src="images/avatar1.jpg" alt="夜袭喵头像" onerror="this.src='https://via.placeholder.com/180x180?text=Avatar+Placeholder'">
+                <div class="image-loading" id="avatarLoading"></div>
+                <img id="avatarImg" src="" alt="夜袭喵头像">
             </div>
             
             <div class="profile">
