@@ -1,6 +1,10 @@
 // 设置网站开始时间
 const startTime = new Date("2024-12-14T13:00:00");
 
+// 动态设置图片路径（修复GitHub Pages路径问题）
+const isGitHubPages = window.location.hostname.includes('github.io');
+const repositoryName = 'your-repository-name'; // 替换为你的仓库名
+
 // DOM元素引用
 const currentTimeEl = document.getElementById('current-time');
 const durationEl = document.getElementById('website-duration');
@@ -17,7 +21,10 @@ const avatarImg = document.getElementById('avatarImg');
 const avatarLoading = document.getElementById('avatarLoading');
 
 // 图片基础路径和备用源
-const localImagePath = 'images/';
+const localImagePath = isGitHubPages 
+    ? `/${repositoryName}/images/` 
+    : 'images/';
+    
 const backupImageBase = 'https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/';
 
 // 图片资源
@@ -54,7 +61,7 @@ function updateTime() {
 // 阻力效果实现
 let lastScrollTop = 0;
 let resistanceActive = false;
-let resistanceThreshold = 150;
+let resistanceThreshold = 120; // 缩小20%
 let resistanceProgress = 0;
 
 function handleScroll() {
@@ -88,18 +95,20 @@ function handleScroll() {
     lastScrollTop = scrollTop;
 }
 
-// 生成带时间戳的URL
-function getCacheBustedUrl(baseUrl, filename) {
-    return `${baseUrl}${filename}?_=${cacheBuster}`;
-}
-
 // 加载图片函数（带缓存清除功能）
 function loadImage(element, imageType, isBackground = false) {
-    const localPath = getCacheBustedUrl(localImagePath, imageResources[imageType]);
-    const backupPath = getCacheBustedUrl(backupImageBase, imageResources[imageType]);
+    const filename = imageResources[imageType];
+    const localPath = localImagePath + filename + `?_=${cacheBuster}`;
+    const backupPath = backupImageBase + filename + `?_=${cacheBuster}`;
     
-    // 先尝试加载本地图片
+    // 显示加载状态（仅头像）
+    if (imageType === 'avatar') {
+        avatarLoading.style.display = 'block';
+    }
+    
+    // 创建测试图片
     const testImage = new Image();
+    
     testImage.onload = function() {
         if (isBackground) {
             backgroundEffects.style.backgroundImage = `url('${localPath}'), linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)`;
@@ -112,7 +121,7 @@ function loadImage(element, imageType, isBackground = false) {
     };
     
     testImage.onerror = function() {
-        // 本地图片加载失败，尝试备用源
+        // 尝试备用源
         const backupTest = new Image();
         backupTest.onload = function() {
             if (isBackground) {
@@ -127,14 +136,12 @@ function loadImage(element, imageType, isBackground = false) {
         };
         
         backupTest.onerror = function() {
-            // 备用源也失败，使用最后备方案
+            // 使用最后备方案
             if (isBackground) {
                 backgroundEffects.style.backgroundImage = 'linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)';
                 showErrorNotice('背景图片加载失败');
             } else {
-                element.src = getCacheBustedUrl(
-                    'https://cdn.pixabay.com/photo/2019/11/09/20/57/german-shepherd-4614451_1280.jpg'
-                );
+                element.src = 'https://cdn.pixabay.com/photo/2019/11/09/20/57/german-shepherd-4614451_1280.jpg';
                 showBackupNotice('使用默认头像图片');
                 avatarLoading.style.display = 'none';
             }
@@ -193,8 +200,8 @@ function initPage() {
         const y = e.clientY / window.innerHeight;
         
         circles.forEach((circle, index) => {
-            const offsetX = (x * 30 - 15) * (index + 1);
-            const offsetY = (y * 30 - 15) * (index + 1);
+            const offsetX = (x * 24 - 12) * (index + 1); // 缩小20%
+            const offsetY = (y * 24 - 12) * (index + 1); // 缩小20%
             circle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
         });
     });
