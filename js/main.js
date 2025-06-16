@@ -214,6 +214,19 @@ function initPage() {
         loading.style.opacity = '0';
         loading.style.visibility = 'hidden';
     }, 1500);
+
+   // 加载 favicon（带备用源）
+   const favicon = document.querySelector('link[rel="icon"]');
+   if (favicon) {
+      const localFavicon = 'images/favicon.ico';
+      const backupFavicon = 'https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/favicon.ico';
+
+      const testFavicon = new Image();
+      testFavicon.onerror = function() {
+         favicon.href = backupFavicon;
+    };
+    testFavicon.src = localFavicon;
+  }
 }
 
 // 页面加载完成后初始化
