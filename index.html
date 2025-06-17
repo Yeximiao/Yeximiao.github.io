@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>喵の窝 - 夜袭喵的个人空间</title>
+    <!-- 智能网页图标加载 -->
+    <link rel="icon" id="favicon" href="images/favicon.ico" type="image/x-icon" onerror="loadFallbackFavicon()">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -616,38 +618,6 @@
             transition: opacity 0.5s ease;
         }
 
-        /* 文件加载状态提示 */
-        .file-status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 8px 15px;
-            border-radius: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            font-size: 0.9rem;
-            z-index: 1002;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.5s ease;
-            transform: translateY(-100px);
-            opacity: 0;
-        }
-
-        .file-status.visible {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .file-status.success {
-            border: 1px solid #5cb85c;
-        }
-
-        .file-status.error {
-            border: 1px solid #d9534f;
-        }
-
         /* 响应式设计 */
         @media (max-width: 768px) {
             .main-title {
@@ -715,21 +685,36 @@
             .content-box {
                 margin-top: 20px;
             }
-            
-            .file-status {
-                top: 70px;
-                right: 10px;
-                font-size: 0.8rem;
-            }
+        }
+        
+        /* 图标状态指示器 */
+        .icon-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+        
+        .icon-status.local {
+            background: rgba(0, 200, 0, 0.3);
+            color: #0f0;
+        }
+        
+        .icon-status.fallback {
+            background: rgba(200, 0, 0, 0.3);
+            color: #f00;
         }
     </style>
 </head>
 <body>
-    <!-- 文件加载状态提示 -->
-    <div class="file-status" id="file-status">
-        <i class="fas fa-spinner fa-spin"></i>
-        <span id="status-text">加载座右铭文件中...</span>
-    </div>
+    <!-- 图标状态指示器 -->
+    <div class="icon-status" id="icon-status">图标加载中...</div>
     
     <!-- 首页 -->
     <section id="home">
@@ -838,18 +823,6 @@
     </div>
 
     <script>
-        // 内置座右铭（本地运行解决方案）
-        const defaultMottos = [
-            "专注提升，永不放弃！",
-            "瞄准目标，扣动扳机！",
-            "每一枪都是新的开始",
-            "练习造就完美",
-            "在游戏中寻找自我",
-            "枪法是练出来的，不是想出来的",
-            "每一局都是新的挑战",
-            "超越昨天的自己"
-        ];
-        
         // 生成星空背景
         function createStars() {
             const starsContainer = document.querySelector('.stars');
@@ -877,67 +850,33 @@
         }
 
         // 座右铭数据
-        let mottos = defaultMottos;
+        let mottos = [];
 
-        // 文件加载状态元素
-        const fileStatus = document.getElementById('file-status');
-        const statusText = document.getElementById('status-text');
-
-        // 从本地文件加载座右铭 - 本地运行解决方案
+        // 从本地文件加载座右铭 - GitHub托管解决方案
         async function loadMottosFromFile() {
-            // 显示加载状态
-            fileStatus.classList.add('visible');
-            statusText.textContent = "加载座右铭文件中...";
-            
             try {
-                // 尝试使用XMLHttpRequest加载本地文件
-                const lines = await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('GET', 'mottos.txt', true);
-                    xhr.onload = function() {
-                        if (this.status >= 200 && this.status < 300) {
-                            const text = this.responseText;
-                            const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
-                            if (lines.length > 0) {
-                                resolve(lines);
-                            } else {
-                                reject(new Error("文件内容为空"));
-                            }
-                        } else {
-                            reject(new Error(`请求失败: ${this.status}`));
-                        }
-                    };
-                    xhr.onerror = function() {
-                        reject(new Error("网络错误"));
-                    };
-                    xhr.send();
-                });
+                // 使用GitHub Pages上的绝对路径
+                const response = await fetch('mottos.txt');
                 
-                // 更新状态
-                statusText.innerHTML = `<i class="fas fa-check-circle"></i> 成功加载 ${lines.length} 条座右铭`;
-                fileStatus.classList.add('success');
+                if (!response.ok) {
+                    throw new Error('文件加载失败');
+                }
                 
-                // 5秒后隐藏状态提示
-                setTimeout(() => {
-                    fileStatus.classList.remove('visible');
-                }, 5000);
-                
-                return lines;
+                const text = await response.text();
+                return text.split('\n').filter(line => line.trim() !== '');
             } catch (error) {
-                // 错误处理 - 使用内置座右铭
-                console.error('加载座右铭失败:', error);
-                
-                // 更新状态
-                statusText.innerHTML = `<i class="fas fa-info-circle"></i> 使用内置座右铭`;
-                fileStatus.classList.add('success');
-                
-                // 5秒后隐藏状态提示
-                setTimeout(() => {
-                    fileStatus.classList.remove('visible');
-                }, 5000);
-                
-                // 返回默认座右铭
-                return defaultMottos;
+                console.error('加载座右铭失败，使用默认数据:', error);
+                // 默认座右铭
+                return [
+                    "专注提升，永不放弃！",
+                    "瞄准目标，扣动扳机！",
+                    "每一枪都是新的开始",
+                    "练习造就完美",
+                    "在游戏中寻找自我",
+                    "枪法是练出来的，不是想出来的",
+                    "每一局都是新的挑战",
+                    "超越昨天的自己"
+                ];
             }
         }
 
@@ -1169,6 +1108,25 @@
             document.getElementById('uptime').textContent = 
                 `${days}天 ${hoursDiff}小时 ${minutesDiff}分 ${secondsDiff}秒`;
         }
+        
+        // 加载备用图标函数
+        function loadFallbackFavicon() {
+            const fallbackUrl = 'https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/favicon.ico';
+            const favicon = document.getElementById('favicon');
+            
+            console.log('本地图标加载失败，切换到备用源');
+            favicon.href = fallbackUrl + '?t=' + new Date().getTime();
+            
+            // 更新状态指示器
+            const status = document.getElementById('icon-status');
+            status.textContent = '使用备用图标';
+            status.className = 'icon-status fallback';
+            
+            // 5秒后淡出状态指示器
+            setTimeout(() => {
+                status.style.opacity = '0';
+            }, 5000);
+        }
 
         // 初始化
         document.addEventListener('DOMContentLoaded', async function() {
@@ -1262,6 +1220,18 @@
             // 初始化时间
             updateTime();
             setInterval(updateTime, 1000);
+            
+            // 更新图标状态指示器
+            const status = document.getElementById('icon-status');
+            setTimeout(() => {
+                status.textContent = '使用本地图标';
+                status.className = 'icon-status local';
+                
+                // 5秒后淡出状态指示器
+                setTimeout(() => {
+                    status.style.opacity = '0';
+                }, 1000);
+            }, 1000);
         });
     </script>
 </body>
