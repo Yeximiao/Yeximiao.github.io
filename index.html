@@ -3,186 +3,1266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>夜袭喵的个人主页</title>
+    <title>喵の窝 - 夜袭喵的个人空间</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Favicon 设置 -->
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --primary-color: #6600ff;
+            --light-bg: rgba(255, 255, 255, 0.8);
+            --dark-bg: rgba(0, 0, 0, 0.8);
+            --text-light: #ffffff;
+            --text-dark: #222222;
+            --transition: all 0.3s ease;
+            --box-shadow: 0 0 20px rgba(102, 0, 255, 0.5);
+            --glow: 0 0 30px rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+            background-color: #000;
+            color: var(--text-light);
+            transition: var(--transition);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body.light-mode {
+            background-color: #f0f0f0;
+            color: var(--text-dark);
+        }
+
+        /* 首页样式 */
+        #home {
+            height: 100vh;
+            width: 100%;
+            background-color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration, 4s) infinite var(--delay, 0s);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .logo-small {
+            position: fixed;
+            top: -60px;
+            left: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            z-index: 1000;
+            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            user-select: none;
+        }
+
+        .logo-small.visible {
+            top: 30px;
+        }
+
+        .logo-small:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s ease;
+        }
+
+        .logo-small:active {
+            transform: scale(0.95);
+        }
+
+        .main-title {
+            font-size: 6rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            letter-spacing: 5px;
+            position: relative;
+            z-index: 10;
+            user-select: none;
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .main-title:hover {
+            transform: scale(1.05);
+            text-shadow: var(--glow);
+        }
+
+        .subtitle-container {
+            position: relative;
+            min-height: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            display: inline-block;
+            height: 1.5rem;
+            line-height: 1.5rem;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.5rem;
+            background-color: white;
+            margin-left: 2px;
+            vertical-align: bottom;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .scroll-down-arrow {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: white;
+            z-index: 10;
+            cursor: pointer;
+            animation: bounce 1.5s infinite, pulse 2s infinite;
+            user-select: none;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* 扉页样式 */
+        #about {
+            min-height: 100vh;
+            width: 100%;
+            background: url('https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/background1.jpg') center/cover no-repeat;
+            background-attachment: fixed;
+            padding: 80px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+        }
+
+        body.light-mode #about {
+            background: url('https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/background1.jpg') center/cover no-repeat;
+            background-attachment: fixed;
+        }
+
+        .content-box {
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0 20px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(5px);
+            transition: opacity 0.5s ease;
+        }
+
+        body.light-mode .content-box {
+            background: var(--light-bg);
+        }
+
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid var(--primary-color);
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .username {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 0 0 10px var(--primary-color);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        body.light-mode .username {
+            color: var(--primary-color);
+            text-shadow: 0 0 5px rgba(102, 0, 255, 0.5);
+        }
+
+        .game-tags {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .game-tag {
+            padding: 8px 15px;
+            background: rgba(102, 0, 255, 0.3);
+            border-radius: 20px;
+            font-weight: bold;
+            transition: var(--transition);
+            cursor: default;
+        }
+
+        .game-tag:hover {
+            transform: translateY(-3px);
+            background: rgba(102, 0, 255, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .social-link:active {
+            transform: translateY(0);
+        }
+
+        .social-link i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .steam-btn {
+            background: linear-gradient(45deg, #134375, #66c0f4);
+        }
+
+        .douyin-btn {
+            background: linear-gradient(45deg, #000000, #333333);
+        }
+
+        .kook-btn {
+            background: linear-gradient(45deg, #3d8e3d, #5cb85c);
+        }
+
+        .divider-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            margin: 50px 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .divider {
+            height: 4px;
+            width: 100%;
+            background: rgba(102, 0, 255, 0.3);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .divider-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #6600ff, #aa00ff);
+            border-radius: 2px;
+            transition: width 0.1s ease;
+        }
+
+        .divider-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            border: 1px solid var(--primary-color);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(102, 0, 255, 0.5);
+            user-select: none;
+        }
+
+        body.light-mode .divider-text {
+            background: rgba(255, 255, 255, 0.7);
+            color: #333;
+        }
+
+        /* 关于我区域 */
+        .about-section {
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(5px);
+            margin-bottom: 50px;
+            transition: opacity 0.5s ease;
+        }
+
+        body.light-mode .about-section {
+            background: var(--light-bg);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        body.light-mode .section-title {
+            color: var(--primary-color);
+            text-shadow: 0 0 5px rgba(102, 0, 255, 0.5);
+        }
+
+        .gear-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .gear-card {
+            background: rgba(30, 30, 50, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(102, 0, 255, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        body.light-mode .gear-card {
+            background: rgba(240, 240, 255, 0.7);
+        }
+
+        .gear-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .gear-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .gear-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        body.light-mode .gear-name {
+            color: #333;
+        }
+
+        .gear-desc {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+
+        body.light-mode .gear-desc {
+            color: #555;
+        }
+
+        /* 右下角浮动按钮 */
+        .floating-buttons {
+            position: fixed;
+            bottom: -100px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+            transition: bottom 0.5s ease, opacity 0.5s ease;
+        }
+
+        .floating-buttons.visible {
+            bottom: 30px;
+        }
+
+        .floating-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: var(--transition);
+            border: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .floating-button:hover {
+            transform: scale(1.15);
+            background: rgba(102, 0, 255, 0.9);
+            box-shadow: 0 0 20px rgba(102, 0, 255, 0.8);
+        }
+
+        .floating-button:active {
+            transform: scale(0.95);
+        }
+
+        /* 设置按钮旋转效果 */
+        .settings-btn {
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 背景欣赏按钮 */
+        .background-toggle {
+            position: fixed;
+            top: -60px;
+            right: 30px;
+            font-size: 1.4rem;
+            color: white;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.5s ease;
+            opacity: 0;
+            user-select: none;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            width: auto;
+            height: auto;
+            padding: 5px;
+        }
+
+        .background-toggle.visible {
+            top: 30px;
+            opacity: 1;
+        }
+
+        .background-toggle:hover {
+            transform: scale(1.2);
+            color: var(--primary-color);
+            text-shadow: 0 0 15px rgba(102, 0, 255, 0.8);
+        }
+
+        .background-toggle:active {
+            transform: scale(0.9);
+        }
+
+        /* 页脚样式 */
+        .site-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: transparent;
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            z-index: 999;
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-item {
+            display: flex;
+            white-space: nowrap;
+        }
+
+        .uptime {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* 背景欣赏模式提示 */
+        .background-hint {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            text-align: center;
+            z-index: 999;
+            padding: 15px 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--primary-color);
+            box-shadow: 0 0 20px rgba(102, 0, 255, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .background-hint.visible {
+            opacity: 1;
+        }
+
+        /* 背景欣赏模式下的隐藏类 */
+        .background-mode-hidden {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: opacity 0.5s ease;
+        }
+
+        /* 文件加载状态提示 */
+        .file-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 0.9rem;
+            z-index: 1002;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.5s ease;
+            transform: translateY(-100px);
+            opacity: 0;
+        }
+
+        .file-status.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .file-status.success {
+            border: 1px solid #5cb85c;
+        }
+
+        .file-status.error {
+            border: 1px solid #d9534f;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 3.5rem;
+            }
+            
+            .main-title:hover {
+                transform: scale(1.03);
+            }
+            
+            .username {
+                font-size: 2rem;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .gear-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .floating-buttons {
+                right: 20px;
+            }
+            
+            .floating-buttons.visible {
+                bottom: 20px;
+            }
+            
+            .floating-button {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
+            
+            .site-footer {
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .footer-content {
+                gap: 10px;
+                flex-direction: column;
+                align-items: center;
+                padding: 8px 15px;
+            }
+            
+            .background-toggle {
+                font-size: 1.2rem;
+            }
+            
+            .background-hint {
+                font-size: 1rem;
+                width: 90%;
+                max-width: 350px;
+            }
+            
+            /* 移动端优化名片位置 */
+            #about {
+                padding-top: 60px;
+            }
+            
+            .content-box {
+                margin-top: 20px;
+            }
+            
+            .file-status {
+                top: 70px;
+                right: 10px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- 加载状态 -->
-    <div class="loading" id="loading">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">夜袭喵的个人空间</div>
-        <div class="loading-subtext">正在加载资源...</div>
+    <!-- 文件加载状态提示 -->
+    <div class="file-status" id="file-status">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span id="status-text">加载座右铭文件中...</span>
     </div>
     
-    <!-- 背景效果 -->
-    <div class="background-effects" id="backgroundEffects">
-        <div class="circle"></div>
-        <div class="circle"></div>
-        <div class="circle"></div>
-    </div>
-    
-    <!-- 错误提示 -->
-    <div class="image-error" id="imageError">
-        <i class="fas fa-exclamation-triangle"></i> 图片加载失败，使用默认背景
-    </div>
-    
-    <!-- 备份提示 -->
-    <div class="image-backup" id="imageBackup">
-        <i class="fas fa-info-circle"></i> 使用备用图片源
-    </div>
-    
-    <!-- 主容器 -->
-    <div class="main-container">
-        <!-- 名片区域 -->
-        <div class="card-container">
-            <div class="avatar">
-                <div class="image-loading" id="avatarLoading"></div>
-                <img id="avatarImg" src="images/avatar1.jpg" alt="夜袭喵头像" 
-                     onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/avatar1.jpg';">
-            </div>
-            
-            <div class="profile">
-                <h1>夜袭喵</h1>
-                <div class="profile-line">
-                    <span>练枪魔怔人</span>
-                    <div class="divider"></div>
-                    <span>FPS游戏狂热爱好者</span>
-                </div>
-                <p>一个追求极致操作的少年</p>
-            </div>
-            
-            <!-- 游戏标签 -->
+    <!-- 首页 -->
+    <section id="home">
+        <div class="stars"></div>
+        <div class="logo-small">喵の窝</div>
+        <h1 class="main-title">喵の窝</h1>
+        <div class="subtitle-container">
+            <div class="subtitle" id="typing-subtitle"></div>
+            <div class="cursor"></div>
+        </div>
+        <div class="scroll-down-arrow" id="scroll-down">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- 扉页 -->
+    <section id="about">
+        <div class="background-toggle" id="background-toggle">
+            <i class="fas fa-eye"></i>
+        </div>
+        
+        <!-- 背景欣赏模式提示 -->
+        <div class="background-hint" id="background-hint">
+            按下 <span style="color: var(--primary-color); font-weight: bold;">ESC</span> 键退出背景欣赏模式
+        </div>
+        
+        <div class="content-box profile">
+            <img src="https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/avatar1.jpg" alt="夜袭喵" class="avatar" onerror="this.onerror=null; this.src='images/avatar1.jpg?t=' + new Date().getTime();">
+            <h2 class="username">夜袭喵</h2>
             <div class="game-tags">
-                <div class="game-tag">Aimlab</div>
-                <div class="game-tag">KovaaK's</div>
-                <div class="game-tag">TheFinals</div>
-                <div class="game-tag">CS2</div>
-                <div class="game-tag">APEX</div>
+                <span class="game-tag">Aimlab</span>
+                <span class="game-tag">Kovvaks</span>
+                <span class="game-tag">TheFinals</span>
             </div>
             
-            <!-- 社交链接 -->
             <div class="social-links">
-                <a href="https://steamcommunity.com/id/Yeximiao/" class="steam" target="_blank">
+                <a href="https://steamcommunity.com/id/Yeximiao/" class="social-link steam-btn" target="_blank">
                     <i class="fab fa-steam"></i> Steam主页
                 </a>
-                <a href="https://v.douyin.com/iUr1sts2/" class="tiktok" target="_blank">
-                    <i class="fab fa-tiktok"></i> 抖音频道
+                <a href="https://v.douyin.com/iUr1sts2/" class="social-link douyin-btn" target="_blank">
+                    <i class="fab fa-tiktok"></i> 抖音主页
                 </a>
-                <a href="https://kook.vip/PvR2FC" class="kook" target="_blank">
-                    <i class="fas fa-headphones-alt"></i> Kook语音
+                <a href="https://kook.vip/PvR2FC" class="social-link kook-btn" target="_blank">
+                    <i class="fas fa-headphones"></i> KOOK语音
                 </a>
             </div>
         </div>
         
-        <!-- 页脚 - 网站存在时间 -->
-        <div class="info-footer">
-            <span id="current-time"></span> | 网站已运行 <span id="website-duration"></span>
+        <div class="divider-container">
+            <div class="divider">
+                <div class="divider-progress" id="divider-progress"></div>
+            </div>
+            <span class="divider-text">向下继续探索</span>
         </div>
         
-        <!-- 阻力区域 -->
-        <div class="resistance-zone">
-            <div class="resistance-bar"></div>
-            <div class="resistance-text">继续向下探索</div>
-        </div>
-        
-        <!-- 阻力提示 -->
-        <div class="resistance-hint">
-            <i class="fas fa-chevron-down"></i> 用力向下滑动查看更多内容
-        </div>
-        
-        <!-- 内容区域 -->
-        <div class="content-section">
+        <div class="about-section">
             <h2 class="section-title">关于我</h2>
             
-            <!-- 游戏外设部分 -->
-            <div class="equipment-showcase">
-                <h3 class="equipment-title">游戏外设</h3>
-                <div class="equipment-grid">
-                    <div class="equipment-item">
-                        <div class="equipment-icon">
-                            <i class="fas fa-keyboard"></i>
-                        </div>
-                        <div class="equipment-info">
-                            <h4>宁芝Mini84 V6 Pro</h4>
-                            <p>静电容键盘，35g压力克数，极致响应速度</p>
-                        </div>
-                    </div>
-                    <div class="equipment-item">
-                        <div class="equipment-icon">
-                            <i class="fas fa-mouse"></i>
-                        </div>
-                        <div class="equipment-info">
-                            <h4>ATK猎空F1探索版</h4>
-                            <p>轻量化设计，PAW3395传感器，8000Hz轮询率</p>
-                        </div>
-                    </div>
-                    <div class="equipment-item">
-                        <div class="equipment-icon">
-                            <i class="fas fa-headphones"></i>
-                        </div>
-                        <div class="equipment-info">
-                            <h4>弱水时砂静海</h4>
-                            <p>入耳式监听耳机，精准定位脚步声，HiFi级音质</p>
-                        </div>
-                    </div>
-                    <div class="equipment-item">
-                        <div class="equipment-icon">
-                            <i class="fas fa-headset"></i>
-                        </div>
-                        <div class="equipment-info">
-                            <h4>飓风二</h4>
-                            <p>头戴式游戏耳机，7.1虚拟环绕声，舒适佩戴体验</p>
-                        </div>
-                    </div>
+            <div class="gear-grid">
+                <div class="gear-card">
+                    <div class="gear-icon"><i class="fas fa-keyboard"></i></div>
+                    <h3 class="gear-name">键盘</h3>
+                    <p class="gear-desc">宁芝Mini84v6pro</p>
+                </div>
+                
+                <div class="gear-card">
+                    <div class="gear-icon"><i class="fas fa-mouse"></i></div>
+                    <h3 class="gear-name">鼠标</h3>
+                    <p class="gear-desc">ATK烈空F1探索版</p>
+                </div>
+                
+                <div class="gear-card">
+                    <div class="gear-icon"><i class="fas fa-headphones"></i></div>
+                    <h3 class="gear-name">入耳式耳机</h3>
+                    <p class="gear-desc">弱水时砂静海</p>
+                </div>
+                
+                <div class="gear-card">
+                    <div class="gear-icon"><i class="fas fa-headphones"></i></div>
+                    <h3 class="gear-name">头戴式耳机</h3>
+                    <p class="gear-desc">HyperX飓风二</p>
                 </div>
             </div>
-            
-            <!-- 分隔线 -->
-            <div class="section-divider"></div>
-            
-            <!-- 游戏内容部分 -->
-            <div class="content-grid">
-                <a href="#" class="content-card">
-                    <i class="fas fa-gamepad"></i>
-                    <h3>游戏攻略</h3>
-                    <p>分享FPS游戏技巧、地图攻略和武器评测，提升你的游戏水平</p>
-                </a>
-                
-                <a href="#" class="content-card">
-                    <i class="fas fa-video"></i>
-                    <h3>精彩集锦</h3>
-                    <p>展示游戏中的高光时刻和精彩操作，学习顶级玩家的技巧</p>
-                </a>
-                
-                <a href="#" class="content-card">
-                    <i class="fas fa-chart-line"></i>
-                    <h3>训练计划</h3>
-                    <p>定制化的练枪计划和提升方案，助你成为顶尖玩家</p>
-                </a>
-                
-                <a href="#" class="content-card">
-                    <i class="fas fa-users"></i>
-                    <h3>社区互动</h3>
-                    <p>加入我们的游戏社区，一起开黑交流，分享游戏心得</p>
-                </a>
+        </div>
+        
+        <!-- 固定在网站底部的时间组件 -->
+        <div class="site-footer">
+            <div class="footer-content">
+                <div class="footer-item" id="beijing-time"></div>
+                <div class="footer-item">
+                    <span>网站已运行: </span>
+                    <span class="uptime" id="uptime"></span>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <!-- 导航按钮 -->
-    <div class="nav-buttons" id="navButtons">
-        <div class="nav-btn" id="toTopBtn">
+    </section>
+
+    <!-- 右下角浮动按钮 -->
+    <div class="floating-buttons" id="floating-buttons">
+        <button class="floating-button" id="back-to-top">
             <i class="fas fa-arrow-up"></i>
-        </div>
-        <div class="nav-btn" id="toBottomBtn">
-            <i class="fas fa-arrow-down"></i>
-        </div>
+        </button>
+        <button class="floating-button settings-btn" id="settings-btn">
+            <i class="fas fa-cog"></i>
+        </button>
     </div>
-    
-    <script src="js/main.js"></script>
+
+    <script>
+        // 内置座右铭（本地运行解决方案）
+        const defaultMottos = [
+            "专注提升，永不放弃！",
+            "瞄准目标，扣动扳机！",
+            "每一枪都是新的开始",
+            "练习造就完美",
+            "在游戏中寻找自我",
+            "枪法是练出来的，不是想出来的",
+            "每一局都是新的挑战",
+            "超越昨天的自己"
+        ];
+        
+        // 生成星空背景
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            const starCount = 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // 随机大小
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // 随机位置
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                // 随机动画参数
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                star.style.setProperty('--delay', `${Math.random() * 5}s`);
+                
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 座右铭数据
+        let mottos = defaultMottos;
+
+        // 文件加载状态元素
+        const fileStatus = document.getElementById('file-status');
+        const statusText = document.getElementById('status-text');
+
+        // 从本地文件加载座右铭 - 本地运行解决方案
+        async function loadMottosFromFile() {
+            // 显示加载状态
+            fileStatus.classList.add('visible');
+            statusText.textContent = "加载座右铭文件中...";
+            
+            try {
+                // 尝试使用XMLHttpRequest加载本地文件
+                const lines = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'mottos.txt', true);
+                    xhr.onload = function() {
+                        if (this.status >= 200 && this.status < 300) {
+                            const text = this.responseText;
+                            const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+                            if (lines.length > 0) {
+                                resolve(lines);
+                            } else {
+                                reject(new Error("文件内容为空"));
+                            }
+                        } else {
+                            reject(new Error(`请求失败: ${this.status}`));
+                        }
+                    };
+                    xhr.onerror = function() {
+                        reject(new Error("网络错误"));
+                    };
+                    xhr.send();
+                });
+                
+                // 更新状态
+                statusText.innerHTML = `<i class="fas fa-check-circle"></i> 成功加载 ${lines.length} 条座右铭`;
+                fileStatus.classList.add('success');
+                
+                // 5秒后隐藏状态提示
+                setTimeout(() => {
+                    fileStatus.classList.remove('visible');
+                }, 5000);
+                
+                return lines;
+            } catch (error) {
+                // 错误处理 - 使用内置座右铭
+                console.error('加载座右铭失败:', error);
+                
+                // 更新状态
+                statusText.innerHTML = `<i class="fas fa-info-circle"></i> 使用内置座右铭`;
+                fileStatus.classList.add('success');
+                
+                // 5秒后隐藏状态提示
+                setTimeout(() => {
+                    fileStatus.classList.remove('visible');
+                }, 5000);
+                
+                // 返回默认座右铭
+                return defaultMottos;
+            }
+        }
+
+        let mottoIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let typingSpeed = 100;
+
+        function typeMotto() {
+            const currentMotto = mottos[mottoIndex];
+            const subtitle = document.getElementById('typing-subtitle');
+            
+            if (isDeleting) {
+                // 删除字符
+                subtitle.textContent = currentMotto.substring(0, charIndex - 1);
+                charIndex--;
+                typingSpeed = 50;
+            } else {
+                // 输入字符
+                subtitle.textContent = currentMotto.substring(0, charIndex + 1);
+                charIndex++;
+                typingSpeed = charIndex === currentMotto.length ? 1500 : 100;
+            }
+            
+            // 检查是否完成删除
+            if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                mottoIndex = (mottoIndex + 1) % mottos.length;
+                typingSpeed = 500;
+            }
+            // 检查是否完成输入
+            else if (!isDeleting && charIndex === currentMotto.length) {
+                typingSpeed = 2000;
+                isDeleting = true;
+            }
+            
+            setTimeout(typeMotto, typingSpeed);
+        }
+
+        // 滚动状态跟踪
+        let canScroll = true;
+        let isScrolling = false;
+        window.lastScrollY = 0;
+        window.scrollYDelta = 0;
+        let settingsVisible = false;
+        let backgroundModeActive = false;
+
+        // 滚动到指定位置 - 使用95px偏移量
+        function scrollToSection(sectionId) {
+            if (isScrolling) return;
+            isScrolling = true;
+            
+            const section = document.getElementById(sectionId);
+            let offset = 0;
+            
+            // 对于扉页增加适量偏移量
+            if (sectionId === 'about') {
+                offset = 95; // 调整为95px
+            }
+            
+            window.scrollTo({
+                top: section.offsetTop + offset,
+                behavior: 'smooth'
+            });
+            
+            setTimeout(() => {
+                isScrolling = false;
+            }, 1000);
+        }
+
+        // 滚动事件处理
+        function handleScroll() {
+            const logoSmall = document.querySelector('.logo-small');
+            const scrollPosition = window.scrollY;
+            const floatingButtons = document.getElementById('floating-buttons');
+            const backgroundToggle = document.getElementById('background-toggle');
+            const dividerProgress = document.getElementById('divider-progress');
+            
+            // 记录滚动方向
+            window.scrollYDelta = scrollPosition - window.lastScrollY;
+            window.lastScrollY = scrollPosition;
+            
+            // 重置滚动能力（当回到顶部时）
+            if (scrollPosition === 0) {
+                canScroll = true;
+                
+                // 如果回到顶部，关闭设置和背景欣赏
+                if (settingsVisible) {
+                    closeSettings();
+                }
+            }
+            
+            // 控制小标题显示/隐藏
+            if (scrollPosition > 50) {
+                logoSmall.classList.add('visible');
+            } else {
+                logoSmall.classList.remove('visible');
+            }
+            
+            // 控制浮动按钮显示（只在扉页区域显示）
+            const aboutOffset = document.getElementById('about').offsetTop;
+            const aboutHeight = document.getElementById('about').offsetHeight;
+            const windowHeight = window.innerHeight;
+            
+            // 精确计算扉页在视口中的位置
+            const isInAboutSection = scrollPosition > aboutOffset - windowHeight * 0.3 &&
+                                    scrollPosition < aboutOffset + aboutHeight - windowHeight * 0.5;
+            
+            if (isInAboutSection && !backgroundModeActive) {
+                floatingButtons.classList.add('visible');
+            } else {
+                floatingButtons.classList.remove('visible');
+            }
+            
+            // 控制背景欣赏按钮显示（仅在设置打开时）
+            if (settingsVisible && scrollPosition > aboutOffset - windowHeight * 0.5) {
+                backgroundToggle.classList.add('visible');
+            } else {
+                backgroundToggle.classList.remove('visible');
+            }
+            
+            // 更新分隔线进度
+            const aboutSection = document.getElementById('about');
+            const aboutSectionOffset = aboutSection.offsetTop;
+            const aboutSectionHeight = aboutSection.offsetHeight;
+            const dividerContainer = document.querySelector('.divider-container');
+            const dividerOffset = dividerContainer.offsetTop;
+            
+            if (scrollPosition >= aboutSectionOffset && scrollPosition <= aboutSectionOffset + aboutSectionHeight) {
+                // 计算进度条位置
+                const progressStart = aboutSectionOffset;
+                const progressEnd = dividerOffset + dividerContainer.offsetHeight;
+                const progressRange = progressEnd - progressStart;
+                
+                if (scrollPosition > progressStart && scrollPosition < progressEnd) {
+                    const progress = (scrollPosition - progressStart) / progressRange;
+                    dividerProgress.style.width = `${Math.min(100, progress * 100)}%`;
+                } else if (scrollPosition >= progressEnd) {
+                    dividerProgress.style.width = '100%';
+                } else {
+                    dividerProgress.style.width = '0%';
+                }
+            }
+            
+            // 当在扉页顶部向上滚动时，回到首页
+            const aboutTopThreshold = aboutSectionOffset + 30;
+            if (scrollPosition < aboutTopThreshold && window.scrollYDelta < 0) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // 切换背景欣赏模式
+        function toggleBackgroundMode() {
+            backgroundModeActive = !backgroundModeActive;
+            const backgroundToggle = document.getElementById('background-toggle');
+            const backgroundHint = document.getElementById('background-hint');
+            const elementsToHide = [
+                document.querySelector('.content-box'),
+                document.querySelector('.divider-container'),
+                document.querySelector('.about-section'),
+                document.getElementById('floating-buttons'),
+                document.querySelector('.site-footer')
+            ];
+            
+            if (backgroundModeActive) {
+                backgroundToggle.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                backgroundHint.classList.add('visible');
+                elementsToHide.forEach(el => {
+                    el.classList.add('background-mode-hidden');
+                });
+                
+                // 显示提示1秒后自动淡出
+                setTimeout(() => {
+                    backgroundHint.classList.remove('visible');
+                }, 1000);
+            } else {
+                backgroundToggle.innerHTML = '<i class="fas fa-eye"></i>';
+                backgroundHint.classList.remove('visible');
+                elementsToHide.forEach(el => {
+                    el.classList.remove('background-mode-hidden');
+                });
+            }
+            
+            // 强制触发滚动事件以更新UI状态
+            setTimeout(handleScroll, 100);
+        }
+
+        // 关闭设置
+        function closeSettings() {
+            settingsVisible = false;
+            const backgroundToggle = document.getElementById('background-toggle');
+            const settingsBtn = document.getElementById('settings-btn');
+            
+            backgroundToggle.classList.remove('visible');
+            settingsBtn.classList.remove('settings-btn');
+            
+            // 如果背景欣赏模式是打开的，关闭它
+            if (backgroundModeActive) {
+                toggleBackgroundMode();
+            }
+        }
+
+        // 更新时间函数
+        function updateTime() {
+            // 获取北京时间 (UTC+8)
+            const now = new Date();
+            const beijingTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            
+            const year = beijingTime.getUTCFullYear();
+            const month = String(beijingTime.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(beijingTime.getUTCDate()).padStart(2, '0');
+            const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
+            const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
+            
+            document.getElementById('beijing-time').innerHTML = `
+                <span>${year}-${month}-${day} ${hours}:${minutes}:${seconds} (UTC+8)</span>
+            `;
+            
+            // 计算网站运行时间
+            const startDate = new Date('2024-12-14T13:00:00Z');
+            const diff = now - startDate;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hoursDiff = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutesDiff = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secondsDiff = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('uptime').textContent = 
+                `${days}天 ${hoursDiff}小时 ${minutesDiff}分 ${secondsDiff}秒`;
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async function() {
+            createStars();
+            
+            // 加载座右铭
+            mottos = await loadMottosFromFile();
+            typeMotto();
+            
+            // 事件监听器
+            window.addEventListener('scroll', handleScroll);
+            handleScroll(); // 初始化滚动状态
+            
+            document.querySelector('.logo-small').addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // 主页下滑
+            document.getElementById('scroll-down').addEventListener('click', function() {
+                if (canScroll) {
+                    canScroll = false;
+                    scrollToSection('about');
+                    // 添加超时恢复，防止滚动卡死
+                    setTimeout(() => { canScroll = true; }, 1500);
+                }
+            });
+            
+            // 主页下滑（鼠标滚轮）
+            window.addEventListener('wheel', function(e) {
+                // 在顶部且向下滚动
+                if (window.scrollY === 0 && e.deltaY > 0 && canScroll) {
+                    canScroll = false;
+                    scrollToSection('about');
+                    // 添加超时恢复，防止滚动卡死
+                    setTimeout(() => { canScroll = true; }, 1500);
+                }
+            });
+            
+            document.getElementById('back-to-top').addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            const backgroundToggle = document.getElementById('background-toggle');
+            const settingsBtn = document.getElementById('settings-btn');
+            
+            settingsBtn.addEventListener('click', function() {
+                settingsVisible = !settingsVisible;
+                
+                // 控制背景欣赏按钮显示
+                if (settingsVisible) {
+                    backgroundToggle.classList.add('visible');
+                    settingsBtn.classList.add('settings-btn');
+                } else {
+                    backgroundToggle.classList.remove('visible');
+                    settingsBtn.classList.remove('settings-btn');
+                }
+            });
+            
+            backgroundToggle.addEventListener('click', toggleBackgroundMode);
+            
+            // 添加ESC键退出背景欣赏模式
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && backgroundModeActive) {
+                    toggleBackgroundMode();
+                }
+            });
+            
+            // 图片错误处理
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('error', function() {
+                    // 尝试网络备用源
+                    const src = this.src;
+                    const filename = src.split('/').pop().split('?')[0];
+                    this.src = `https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/${filename}?t=${new Date().getTime()}`;
+                    
+                    // 如果备用源也加载失败，显示替代文本
+                    this.onerror = function() {
+                        this.alt = filename;
+                        this.src = '';
+                        this.style.backgroundColor = document.body.classList.contains('light-mode') ? '#eee' : '#333';
+                        this.style.display = 'flex';
+                        this.style.justifyContent = 'center';
+                        this.style.alignItems = 'center';
+                        this.style.color = document.body.classList.contains('light-mode') ? '#333' : '#fff';
+                        this.style.fontWeight = 'bold';
+                        this.innerHTML = filename.split('.')[0];
+                    };
+                });
+            });
+            
+            // 初始化时间
+            updateTime();
+            setInterval(updateTime, 1000);
+        });
+    </script>
 </body>
 </html>
