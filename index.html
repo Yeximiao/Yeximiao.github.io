@@ -277,6 +277,54 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
+        /* 新添加的联系信息样式 */
+        .contact-info {
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+            font-size: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            background: rgba(102, 0, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(102, 0, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-item i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            color: #fff;
+            min-width: 24px;
+        }
+
+        body.light-mode .contact-item i {
+            color: #6600ff;
+        }
+
+        .contact-text {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        body.light-mode .contact-info {
+            color: #333;
+        }
+
         .social-links {
             display: flex;
             justify-content: center;
@@ -685,6 +733,11 @@
             .content-box {
                 margin-top: 20px;
             }
+
+            .contact-item {
+                padding: 8px 15px;
+                font-size: 0.95rem;
+            }
         }
         
         /* 图标状态指示器 */
@@ -748,6 +801,18 @@
                 <span class="game-tag">Aimlab</span>
                 <span class="game-tag">Kovvaks</span>
                 <span class="game-tag">TheFinals</span>
+            </div>
+            
+            <!-- 新添加的联系信息 -->
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fab fa-weixin"></i>
+                    <span class="contact-text">微信号: YeximiaoOVO</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-server"></i>
+                    <span class="contact-text">Teamspeak: yeximiao.ts3.uno (CNServer)</span>
+                </div>
             </div>
             
             <div class="social-links">
@@ -817,7 +882,8 @@
         <button class="floating-button" id="back-to-top">
             <i class="fas fa-arrow-up"></i>
         </button>
-        <button class="floating-button settings-btn" id="settings-btn">
+        <!-- 修复：初始时移除settings-btn类 -->
+        <button class="floating-button" id="settings-btn">
             <i class="fas fa-cog"></i>
         </button>
     </div>
@@ -1178,9 +1244,11 @@
                 // 控制背景欣赏按钮显示
                 if (settingsVisible) {
                     backgroundToggle.classList.add('visible');
+                    // 点击后才添加旋转类
                     settingsBtn.classList.add('settings-btn');
                 } else {
                     backgroundToggle.classList.remove('visible');
+                    // 移除旋转类
                     settingsBtn.classList.remove('settings-btn');
                 }
             });
