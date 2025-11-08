@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开镜灵敏度计算器 - 喵の窝</title>
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .page-container {
+            min-height: 100vh;
+            width: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            padding: 100px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page-header {
+            width: 90%;
+            max-width: 1000px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 0 0 20px var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            color: #e0d6ff;
+            font-size: 1.2rem;
+        }
+
+        .calculator-wrapper {
+            width: 90%;
+            max-width: 1000px;
+            background: rgba(25, 25, 40, 0.85);
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+        }
+
+        .calculator-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .output-section {
+            flex: 1;
+            min-width: 250px;
+            padding: 25px;
+            background: rgba(30, 30, 50, 0.7);
+            border-radius: 15px;
+            border: 1px solid rgba(102, 0, 255, 0.4);
+        }
+
+        .input-section {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .output-section h3, .input-section h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid rgba(102, 0, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .output-section h3 i, .input-section h3 i {
+            color: var(--primary-color);
+        }
+
+        .calculator-section {
+            background: rgba(30, 30, 50, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(102, 0, 255, 0.3);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #e0d6ff;
+            font-size: 0.95rem;
+        }
+
+        .slider-input-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-input-group input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(102, 0, 255, 0.2);
+            outline: none;
+        }
+
+        .slider-input-group input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(102, 0, 255, 0.5);
+        }
+
+        .slider-input-group input[type="number"] {
+            width: 80px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(102, 0, 255, 0.5);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .slider-input-group input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(102, 0, 255, 0.3);
+        }
+
+        .output-value {
+            margin-bottom: 30px;
+        }
+
+        .output-value > label {
+            color: #e0d6ff;
+            font-size: 1rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .output-slider-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .output-slider-group input[type="range"] {
+            flex: 1;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .output-slider-group span {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #00ff88;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .output-float {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            margin-top: 10px;
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(102, 0, 255, 0.15);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(102, 0, 255, 0.3);
+        }
+
+        .toggle-group label {
+            color: white;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 55px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-toggle {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(100, 100, 100, 0.5);
+            transition: .4s;
+            border-radius: 30px;
+            border: 1px solid rgba(102, 0, 255, 0.3);
+        }
+
+        .slider-toggle:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input:checked + .slider-toggle {
+            background-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(102, 0, 255, 0.5);
+        }
+
+        input:checked + .slider-toggle:before {
+            transform: translateX(25px);
+        }
+
+        .disabled-group {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .hint-group {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            color: #ffd54f;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .hint-group input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            font-weight: 600;
+            padding: 8px 12px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .status-label {
+            font-size: 0.9em;
+            font-weight: normal;
+            color: #00ff88;
+        }
+
+        .divider {
+            border: 0;
+            border-top: 1px solid rgba(102, 0, 255, 0.3);
+            margin: 25px 0;
+        }
+
+        .back-home-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .back-home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 0, 255, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .calculator-wrapper {
+                padding: 25px;
+            }
+
+            .calculator-layout {
+                flex-direction: column;
+            }
+
+            .output-section, .input-section {
+                min-width: 100%;
+            }
+
+            .slider-input-group input[type="number"] {
+                width: 70px;
+                padding: 8px;
+            }
+
+            .back-home-btn {
+                top: 20px;
+                left: 20px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-home-btn">
+        <i class="fas fa-home"></i>
+        <span>返回首页</span>
+    </a>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1>🎯 开镜灵敏度计算器</h1>
+            <p>基于 MDHn% 方法的精确开镜灵敏度计算</p>
+        </div>
+
+        <div class="calculator-wrapper">
+            <div class="calculator-layout">
+                
+                <!-- 输出区域 -->
+                <div class="output-section">
+                    <h3><i class="fas fa-chart-line"></i> 计算结果</h3>
+
+                    <div class="output-value">
+                        <label>鼠标缩放灵敏度系数</label>
+                        <div class="output-slider-group">
+                            <input type="range" id="zoomSensSlider" min="1" max="100" value="100" disabled>
+                            <span id="zoomSensSliderValue">100</span>
+                        </div>
+                        <div class="output-float" id="zoomSensFloat">100.0000%</div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="output-value">
+                        <label>
+                            开镜灵敏度
+                            <span class="status-label" id="adsSensLabelStatus">(MDH 0%)</span>
+                        </label>
+                        <div class="output-float" id="adsSensFloat">0.00</div>
+
+                        <div class="hint-group">
+                            <strong><i class="fas fa-lightbulb"></i> 温馨提示：</strong><br>
+                            <input type="checkbox" id="enableIndependentSens">
+                            <label for="enableIndependentSens" style="display: inline; cursor: pointer;">
+                                开镜灵敏度的观察灵敏度过慢，想要单独的观察灵敏度？
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输入区域 -->
+                <div class="input-section">
+                    <h3><i class="fas fa-sliders-h"></i> 参数设置</h3>
+
+                    <div class="calculator-section">
+                        <div class="input-group">
+                            <label for="hipfireFovInput">1. 观察FOV (HFOV, 1-100)</label>
+                            <div class="slider-input-group">
+                                <input type="range" id="hipfireFovSlider" min="1" max="100" value="100">
+                                <input type="number" id="hipfireFovInput" min="1" max="100" value="100">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="adsFovInput">2. 开镜FOV (HFOV, 1-100)</label>
+                            <div class="slider-input-group">
+                                <input type="range" id="adsFovSlider" min="1" max="100" value="78">
+                                <input type="number" id="adsFovInput" min="1" max="100" value="78">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="mouseLookSensInput">3. 鼠标观察灵敏度 (1-100%)</label>
+                            <div class="slider-input-group">
+                                <input type="range" id="mouseLookSensSlider" min="1" max="100" value="50">
+                                <input type="number" id="mouseLookSensInput" min="1" max="100" value="50">
+                            </div>
+                        </div>
+
+                        <div class="toggle-group">
+                            <label>4. 鼠标焦距灵敏度缩放 (MDH 0%)</label>
+                            <label class="switch">
+                                <input type="checkbox" id="focalLengthScaling" checked>
+                                <span class="slider-toggle"></span>
+                            </label>
+                        </div>
+
+                        <div class="input-group" id="mdhPercentageGroup">
+                            <label for="mdhPercentageInput">5. MDHn% 数值 (0-100%)</label>
+                            <div class="slider-input-group">
+                                <input type="range" id="mdhPercentageSlider" min="0" max="100" value="100">
+                                <input type="number" id="mdhPercentageInput" min="0" max="100" value="100">
+                            </div>
+                        </div>
+                        
+                        <div class="input-group" id="independentSensGroup" style="display: none; border-top: 2px solid var(--primary-color); padding-top: 20px; margin-top: 20px;">
+                            <label for="independentSensInput">
+                                <i class="fas fa-star"></i> 6. 独立 Hipfire 灵敏度 (用于系数调整)
+                            </label>
+                            <div class="slider-input-group">
+                                <input type="range" id="independentSensSlider" min="1" max="100" value="50">
+                                <input type="number" id="independentSensInput" min="1" max="100" value="50">
+                            </div>
+                            <div id="independentSensError" class="error-message"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const elements = {
+            hipfireFovInput: document.getElementById('hipfireFovInput'),
+            hipfireFovSlider: document.getElementById('hipfireFovSlider'),
+            adsFovInput: document.getElementById('adsFovInput'),
+            adsFovSlider: document.getElementById('adsFovSlider'),
+            mouseLookSensInput: document.getElementById('mouseLookSensInput'),
+            mouseLookSensSlider: document.getElementById('mouseLookSensSlider'),
+            focalLengthScaling: document.getElementById('focalLengthScaling'),
+            mdhPercentageGroup: document.getElementById('mdhPercentageGroup'),
+            mdhPercentageInput: document.getElementById('mdhPercentageInput'),
+            mdhPercentageSlider: document.getElementById('mdhPercentageSlider'),
+            
+            zoomSensSlider: document.getElementById('zoomSensSlider'),
+            zoomSensSliderValue: document.getElementById('zoomSensSliderValue'),
+            zoomSensFloat: document.getElementById('zoomSensFloat'),
+            adsSensFloat: document.getElementById('adsSensFloat'),
+            adsSensLabelStatus: document.getElementById('adsSensLabelStatus'),
+
+            enableIndependentSens: document.getElementById('enableIndependentSens'),
+            independentSensGroup: document.getElementById('independentSensGroup'),
+            independentSensInput: document.getElementById('independentSensInput'),
+            independentSensSlider: document.getElementById('independentSensSlider'),
+            independentSensError: document.getElementById('independentSensError')
+        };
+
+        function calculate() {
+            const hipfireFov = parseFloat(elements.hipfireFovInput.value);
+            const adsFov = parseFloat(elements.adsFovInput.value);
+            const mouseLookSens = parseFloat(elements.mouseLookSensInput.value);
+            const mdhPercent = parseFloat(elements.mdhPercentageInput.value);
+            const isFocalLengthOn = elements.focalLengthScaling.checked;
+            const isIndependentSensOn = elements.enableIndependentSens.checked;
+            const independentSens = parseFloat(elements.independentSensInput.value);
+            
+            elements.independentSensError.innerText = '';
+
+            if (isNaN(hipfireFov) || isNaN(adsFov) || isNaN(mouseLookSens) || hipfireFov <= 0 || adsFov <= 0 || isNaN(independentSens)) {
+                return;
+            }
+            if (isIndependentSensOn && independentSens <= 0) {
+                elements.independentSensError.innerText = '错误：独立灵敏度必须大于 0';
+                return;
+            }
+
+            const hipfireTan = Math.tan((hipfireFov / 2) * (Math.PI / 180));
+            const adsTan = Math.tan((adsFov / 2) * (Math.PI / 180));
+            const ratio0 = adsTan / hipfireTan;
+            const ratio100 = adsFov / hipfireFov;
+            
+            let finalZoomMultiplier;
+            let finalAdsSens;
+            let statusText;
+
+            if (isFocalLengthOn) {
+                finalZoomMultiplier = 1.0;
+                finalAdsSens = mouseLookSens * 1.0 * ratio0;
+                statusText = "(MDH 0%)";
+                elements.mdhPercentageGroup.classList.add('disabled-group');
+            } else {
+                const xDecimal = mdhPercent / 100;
+                const ratioX = ratio0 + (ratio100 - ratio0) * xDecimal;
+                finalZoomMultiplier = ratioX;
+                finalAdsSens = mouseLookSens * finalZoomMultiplier;
+                statusText = `(MDH ${mdhPercent}%)`;
+                elements.mdhPercentageGroup.classList.remove('disabled-group');
+            }
+
+            let finalZoomMultiplierToDisplay = finalZoomMultiplier;
+
+            if (isIndependentSensOn) {
+                const modifier = mouseLookSens / independentSens;
+                const newZoomMultiplier = finalZoomMultiplier * modifier;
+                const newZoomMultiplierPercent = newZoomMultiplier * 100;
+
+                if (newZoomMultiplierPercent < 1 || newZoomMultiplierPercent > 100) {
+                    elements.independentSensError.innerText = `错误：计算系数 (${newZoomMultiplierPercent.toFixed(2)}%) 超出 1-100% 范围`;
+                } else {
+                    finalZoomMultiplierToDisplay = newZoomMultiplier;
+                }
+            }
+
+            if (!isFinite(finalZoomMultiplierToDisplay) || finalZoomMultiplierToDisplay < 0) {
+                finalZoomMultiplierToDisplay = 0;
+            }
+            
+            const zoomSensPercent = finalZoomMultiplierToDisplay * 100;
+            const zoomSensRoundedInt = Math.round(zoomSensPercent);
+            
+            elements.zoomSensSlider.max = Math.max(100, zoomSensRoundedInt); 
+            elements.zoomSensSlider.value = zoomSensRoundedInt;
+            elements.zoomSensSliderValue.innerText = zoomSensRoundedInt;
+            elements.zoomSensFloat.innerText = `${zoomSensPercent.toFixed(4)}%`;
+
+            elements.adsSensFloat.innerText = finalAdsSens.toFixed(4);
+            elements.adsSensLabelStatus.innerText = statusText;
+        }
+
+        function setupListeners() {
+            const linkSliderInput = (slider, input) => {
+                slider.addEventListener('input', () => {
+                    input.value = slider.value;
+                    calculate();
+                });
+                input.addEventListener('input', () => {
+                    let val = parseFloat(input.value);
+                    const min = parseFloat(input.min);
+                    const max = parseFloat(input.max);
+                    if (isNaN(val)) val = min;
+                    if (val < min) val = min; 
+                    if (val > max) val = max;
+                    
+                    if (input.value.trim() === "" || isNaN(val)) {
+                    } else {
+                        input.value = val;
+                        slider.value = val;
+                    }
+                    
+                    calculate();
+                });
+            };
+
+            linkSliderInput(elements.hipfireFovSlider, elements.hipfireFovInput);
+            linkSliderInput(elements.adsFovSlider, elements.adsFovInput);
+            linkSliderInput(elements.mdhPercentageSlider, elements.mdhPercentageInput);
+            linkSliderInput(elements.independentSensSlider, elements.independentSensInput);
+            linkSliderInput(elements.mouseLookSensSlider, elements.mouseLookSensInput);
+
+            elements.focalLengthScaling.addEventListener('change', calculate);
+
+            elements.enableIndependentSens.addEventListener('change', () => {
+                const isEnabled = elements.enableIndependentSens.checked;
+                if (isEnabled) {
+                    const currentValue = parseFloat(elements.mouseLookSensInput.value);
+                    elements.independentSensInput.value = currentValue;
+                    elements.independentSensSlider.value = currentValue;
+                    elements.independentSensGroup.style.display = 'block';
+                } else {
+                    elements.independentSensGroup.style.display = 'none';
+                    elements.independentSensError.innerText = '';
+                }
+                calculate();
+            });
+        }
+
+        window.onload = () => {
+            setupListeners();
+            const defaultValue = parseFloat(elements.mouseLookSensInput.value);
+            elements.independentSensSlider.value = defaultValue;
+            elements.independentSensInput.value = defaultValue;
+            calculate();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛制计算器 - 喵の窝</title>
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .page-container {
+            min-height: 100vh;
+            width: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            padding: 100px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page-header {
+            width: 90%;
+            max-width: 1000px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 0 0 20px var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            color: #e0d6ff;
+            font-size: 1.2rem;
+        }
+
+        .calculator-wrapper {
+            width: 90%;
+            max-width: 1000px;
+            background: rgba(25, 25, 40, 0.85);
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            padding: 20px;
+            background: rgba(30, 30, 50, 0.7);
+            border: 2px solid rgba(102, 0, 255, 0.4);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .mode-btn:hover {
+            background: rgba(102, 0, 255, 0.2);
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), #8a2be2);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 20px rgba(102, 0, 255, 0.6);
+        }
+
+        .input-section {
+            display: none;
+        }
+
+        .input-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px rgba(102, 0, 255, 0.5);
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(30, 30, 50, 0.8);
+            border: 1px solid rgba(102, 0, 255, 0.4);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(102, 0, 255, 0.4);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .team-input {
+            background: rgba(30, 30, 50, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(102, 0, 255, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .team-name {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .remove-team-btn {
+            background: rgba(220, 53, 69, 0.3);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .remove-team-btn:hover {
+            background: rgba(220, 53, 69, 0.5);
+        }
+
+        .add-team-btn {
+            width: 100%;
+            padding: 15px;
+            background: rgba(40, 167, 69, 0.2);
+            border: 2px dashed rgba(40, 167, 69, 0.5);
+            border-radius: 10px;
+            color: #28a745;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .add-team-btn:hover {
+            background: rgba(40, 167, 69, 0.3);
+            border-color: #28a745;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary-color), #8a2be2);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 0, 255, 0.4);
+            margin-top: 20px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 0, 255, 0.6);
+        }
+
+        .result-section {
+            margin-top: 40px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-title {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(102, 0, 255, 0.5);
+        }
+
+        .ranking-table {
+            width: 100%;
+            background: rgba(30, 30, 50, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(102, 0, 255, 0.3);
+        }
+
+        .ranking-header {
+            background: linear-gradient(135deg, var(--primary-color), #8a2be2);
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 60px 1fr 100px 100px;
+            gap: 15px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .ranking-row {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 60px 1fr 100px 100px;
+            gap: 15px;
+            align-items: center;
+            border-bottom: 1px solid rgba(102, 0, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .ranking-row:hover {
+            background: rgba(102, 0, 255, 0.1);
+        }
+
+        .ranking-row:last-child {
+            border-bottom: none;
+        }
+
+        .rank-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(102, 0, 255, 0.5);
+        }
+
+        .rank-number.gold { color: #ffd700; }
+        .rank-number.silver { color: #c0c0c0; }
+        .rank-number.bronze { color: #cd7f32; }
+
+        .team-info {
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .points {
+            color: #e0d6ff;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .wins {
+            color: #28a745;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .back-home-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+        }
+
+        .back-home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 0, 255, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .calculator-wrapper {
+                padding: 25px;
+            }
+
+            .ranking-header,
+            .ranking-row {
+                grid-template-columns: 40px 1fr 80px;
+                gap: 10px;
+                font-size: 0.9rem;
+            }
+
+            .wins {
+                display: none;
+            }
+
+            .back-home-btn {
+                top: 20px;
+                left: 20px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-home-btn">
+        <i class="fas fa-home"></i>
+        <span>返回首页</span>
+    </a>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1><i class="fas fa-trophy"></i> 赛制计算器</h1>
+            <p>计算积分制和淘汰制比赛的排名</p>
+        </div>
+
+        <div class="calculator-wrapper">
+            <div class="mode-selector">
+                <button class="mode-btn active" onclick="switchMode('points')">
+                    <i class="fas fa-star"></i><br>积分制
+                </button>
+                <button class="mode-btn" onclick="switchMode('elimination')">
+                    <i class="fas fa-skull-crossbones"></i><br>淘汰制
+                </button>
+                <button class="mode-btn" onclick="switchMode('roundrobin')">
+                    <i class="fas fa-sync-alt"></i><br>循环赛
+                </button>
+            </div>
+
+            <!-- 积分制 -->
+            <div id="pointsMode" class="input-section active">
+                <div id="teamsContainer">
+                    <div class="team-input">
+                        <div class="team-header">
+                            <span class="team-name">队伍 1</span>
+                        </div>
+                        <div class="input-row">
+                            <input type="text" placeholder="队伍名称" class="team-name-input" value="Team Alpha">
+                            <input type="number" placeholder="胜场" class="wins-input" value="5">
+                            <input type="number" placeholder="负场" class="losses-input" value="2">
+                            <input type="number" placeholder="击杀数" class="kills-input" value="45">
+                        </div>
+                    </div>
+                </div>
+                <button class="add-team-btn" onclick="addTeam()">
+                    <i class="fas fa-plus"></i> 添加队伍
+                </button>
+                <button class="calculate-btn" onclick="calculatePoints()">
+                    <i class="fas fa-calculator"></i> 计算排名
+                </button>
+            </div>
+
+            <!-- 淘汰制 -->
+            <div id="eliminationMode" class="input-section">
+                <div class="input-group">
+                    <label><i class="fas fa-users"></i> 参赛队伍数量</label>
+                    <select id="teamCount" onchange="generateBracket()">
+                        <option value="4">4 队</option>
+                        <option value="8" selected>8 队</option>
+                        <option value="16">16 队</option>
+                        <option value="32">32 队</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-info-circle"></i> 赛制信息</label>
+                    <div id="bracketInfo" style="color: #e0d6ff; padding: 15px; background: rgba(30, 30, 50, 0.5); border-radius: 10px;">
+                        8队淘汰制：需要进行3轮比赛<br>
+                        - 第1轮（四分之一决赛）：4场<br>
+                        - 第2轮（半决赛）：2场<br>
+                        - 第3轮（决赛）：1场
+                    </div>
+                </div>
+            </div>
+
+            <!-- 循环赛 -->
+            <div id="roundrobinMode" class="input-section">
+                <div class="input-group">
+                    <label><i class="fas fa-users"></i> 参赛队伍数量</label>
+                    <input type="number" id="rrTeamCount" value="6" min="2" max="20" onchange="calculateRoundRobin()">
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-redo"></i> 循环次数</label>
+                    <select id="roundCount" onchange="calculateRoundRobin()">
+                        <option value="1" selected>单循环</option>
+                        <option value="2">双循环</option>
+                        <option value="3">三循环</option>
+                    </select>
+                </div>
+                <div id="rrResult" style="margin-top: 20px; color: #e0d6ff; padding: 20px; background: rgba(30, 30, 50, 0.7); border-radius: 15px; border: 1px solid rgba(102, 0, 255, 0.3);"></div>
+            </div>
+
+            <div class="result-section" id="resultSection">
+                <div class="result-title">
+                    <i class="fas fa-medal"></i> 最终排名
+                </div>
+                <div class="ranking-table">
+                    <div class="ranking-header">
+                        <div>排名</div>
+                        <div>队伍</div>
+                        <div>积分</div>
+                        <div class="wins">胜场</div>
+                    </div>
+                    <div id="rankingBody"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'points';
+        let teamCounter = 1;
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.mode-btn').classList.add('active');
+            
+            document.querySelectorAll('.input-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(mode + 'Mode').classList.add('active');
+            
+            document.getElementById('resultSection').classList.remove('show');
+        }
+
+        function addTeam() {
+            teamCounter++;
+            const container = document.getElementById('teamsContainer');
+            const teamDiv = document.createElement('div');
+            teamDiv.className = 'team-input';
+            teamDiv.innerHTML = `
+                <div class="team-header">
+                    <span class="team-name">队伍 ${teamCounter}</span>
+                    <button class="remove-team-btn" onclick="removeTeam(this)">
+                        <i class="fas fa-times"></i> 移除
+                    </button>
+                </div>
+                <div class="input-row">
+                    <input type="text" placeholder="队伍名称" class="team-name-input" value="Team ${String.fromCharCode(64 + teamCounter)}">
+                    <input type="number" placeholder="胜场" class="wins-input" value="0">
+                    <input type="number" placeholder="负场" class="losses-input" value="0">
+                    <input type="number" placeholder="击杀数" class="kills-input" value="0">
+                </div>
+            `;
+            container.appendChild(teamDiv);
+        }
+
+        function removeTeam(btn) {
+            btn.closest('.team-input').remove();
+        }
+
+        function calculatePoints() {
+            const teams = [];
+            document.querySelectorAll('.team-input').forEach(teamDiv => {
+                const name = teamDiv.querySelector('.team-name-input').value;
+                const wins = parseInt(teamDiv.querySelector('.wins-input').value) || 0;
+                const losses = parseInt(teamDiv.querySelector('.losses-input').value) || 0;
+                const kills = parseInt(teamDiv.querySelector('.kills-input').value) || 0;
+                
+                // 积分计算：胜场3分 + 击杀数
+                const points = wins * 3 + kills;
+                
+                teams.push({ name, wins, losses, kills, points });
+            });
+
+            // 按积分排序
+            teams.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                return b.kills - a.kills;
+            });
+
+            // 显示结果
+            displayRanking(teams);
+        }
+
+        function displayRanking(teams) {
+            const rankingBody = document.getElementById('rankingBody');
+            rankingBody.innerHTML = '';
+
+            teams.forEach((team, index) => {
+                const rank = index + 1;
+                let rankClass = '';
+                if (rank === 1) rankClass = 'gold';
+                else if (rank === 2) rankClass = 'silver';
+                else if (rank === 3) rankClass = 'bronze';
+
+                const row = document.createElement('div');
+                row.className = 'ranking-row';
+                row.innerHTML = `
+                    <div class="rank-number ${rankClass}">#${rank}</div>
+                    <div class="team-info">${team.name}</div>
+                    <div class="points">${team.points}分</div>
+                    <div class="wins">${team.wins}胜</div>
+                `;
+                rankingBody.appendChild(row);
+            });
+
+            document.getElementById('resultSection').classList.add('show');
+            document.getElementById('resultSection').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'nearest' 
+            });
+        }
+
+        function generateBracket() {
+            const teamCount = parseInt(document.getElementById('teamCount').value);
+            const rounds = Math.log2(teamCount);
+            const info = document.getElementById('bracketInfo');
+            
+            let infoText = `${teamCount}队淘汰制：需要进行${rounds}轮比赛<br>`;
+            
+            for (let i = 0; i < rounds; i++) {
+                const matchesInRound = teamCount / Math.pow(2, i + 1);
+                const roundNames = ['决赛', '半决赛', '四分之一决赛', '八分之一决赛', '十六分之一决赛'];
+                const roundName = i < rounds - roundNames.length ? `第${rounds - i}轮` : roundNames[rounds - i - 1];
+                infoText += `- 第${i + 1}轮（${roundName}）：${matchesInRound}场<br>`;
+            }
+            
+            info.innerHTML = infoText;
+        }
+
+        function calculateRoundRobin() {
+            const teamCount = parseInt(document.getElementById('rrTeamCount').value);
+            const roundCount = parseInt(document.getElementById('roundCount').value);
+            
+            const matchesPerRound = (teamCount * (teamCount - 1)) / 2;
+            const totalMatches = matchesPerRound * roundCount;
+            const totalRounds = teamCount - 1;
+            
+            const result = document.getElementById('rrResult');
+            result.innerHTML = `
+                <div style="font-size: 1.1rem;">
+                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(102, 0, 255, 0.1); border-radius: 10px;">
+                        <i class="fas fa-users"></i> <strong>参赛队伍：</strong> ${teamCount} 队
+                    </div>
+                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(102, 0, 255, 0.1); border-radius: 10px;">
+                        <i class="fas fa-calendar-alt"></i> <strong>比赛轮次：</strong> ${totalRounds} 轮
+                    </div>
+                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(102, 0, 255, 0.1); border-radius: 10px;">
+                        <i class="fas fa-futbol"></i> <strong>单循环场次：</strong> ${matchesPerRound} 场
+                    </div>
+                    <div style="padding: 15px; background: linear-gradient(135deg, rgba(102, 0, 255, 0.2), rgba(138, 43, 226, 0.2)); border-radius: 10px; border: 1px solid var(--primary-color);">
+                        <i class="fas fa-trophy"></i> <strong>总比赛场次：</strong> ${totalMatches} 场
+                    </div>
+                </div>
+            `;
+        }
+
+        // 初始化
+        generateBracket();
+        calculateRoundRobin();
+    </script>
+</body>
+</html>
