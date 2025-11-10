@@ -4,601 +4,1050 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>赛制计算器 - 喵の窝</title>
-    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/style.css">
     <style>
-        .page-container {
+        :root {
+            --primary-color: #6600ff;
+            --secondary-color: #aa00ff;
+            --dark-bg: rgba(0, 0, 0, 0.8);
+            --card-bg: rgba(25, 25, 40, 0.85);
+            --text-light: #ffffff;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: url('https://cdn.jsdelivr.net/gh/Yeximiao/image-repo@main/Yeximiao.github.io-web/background1.jpg') center/cover no-repeat fixed;
             min-height: 100vh;
-            width: 100%;
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-            padding: 100px 20px 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            color: var(--text-light);
+            padding: 15px;
+            font-size: 0.85rem;
         }
 
-        .page-header {
-            width: 90%;
-            max-width: 1000px;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
             text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .page-header h1 {
-            font-size: 3rem;
-            color: white;
-            text-shadow: 0 0 20px var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .page-header p {
-            color: #e0d6ff;
-            font-size: 1.2rem;
-        }
-
-        .calculator-wrapper {
-            width: 90%;
-            max-width: 1000px;
-            background: rgba(25, 25, 40, 0.85);
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
             border: 2px solid var(--primary-color);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: var(--box-shadow);
             backdrop-filter: blur(10px);
-            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: white;
+            text-shadow: 0 0 15px var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #e0d6ff;
+            font-size: 0.9rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 0, 255, 0.5);
         }
 
         .mode-selector {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
-        .mode-btn {
+        .mode-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(102, 0, 255, 0.3);
+            border-radius: 12px;
             padding: 20px;
-            background: rgba(30, 30, 50, 0.7);
-            border: 2px solid rgba(102, 0, 255, 0.4);
-            border-radius: 15px;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
         }
 
-        .mode-btn:hover {
-            background: rgba(102, 0, 255, 0.2);
+        .mode-card:hover {
             border-color: var(--primary-color);
             transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 0, 255, 0.4);
         }
 
-        .mode-btn.active {
-            background: linear-gradient(135deg, var(--primary-color), #8a2be2);
+        .mode-card.active {
             border-color: var(--primary-color);
-            box-shadow: 0 0 20px rgba(102, 0, 255, 0.6);
+            background: rgba(102, 0, 255, 0.2);
+        }
+
+        .mode-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .mode-card p {
+            color: #aaa;
+            font-size: 0.85rem;
         }
 
         .input-section {
-            display: none;
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
         }
 
-        .input-section.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
+        .input-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: white;
+            text-shadow: 0 0 8px var(--primary-color);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .team-input, .player-input {
+            background: rgba(30, 30, 50, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(102, 0, 255, 0.3);
         }
 
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 12px;
         }
 
         .input-group label {
             display: block;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 0 0 5px rgba(102, 0, 255, 0.5);
+            margin-bottom: 6px;
+            color: #e0d6ff;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
-        .input-group input,
-        .input-group select {
+        .input-group input {
             width: 100%;
-            padding: 15px;
-            background: rgba(30, 30, 50, 0.8);
-            border: 1px solid rgba(102, 0, 255, 0.4);
-            border-radius: 10px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(102, 0, 255, 0.5);
+            border-radius: 6px;
             color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 0.85rem;
         }
 
-        .input-group input:focus,
-        .input-group select:focus {
+        .input-group input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 15px rgba(102, 0, 255, 0.4);
+            box-shadow: 0 0 8px rgba(102, 0, 255, 0.5);
         }
 
-        .input-row {
+        .player-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
         }
 
-        .team-input {
-            background: rgba(30, 30, 50, 0.5);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(102, 0, 255, 0.3);
-            margin-bottom: 15px;
-        }
-
-        .team-header {
+        .player-tag {
+            background: rgba(102, 0, 255, 0.3);
+            padding: 6px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
         }
 
-        .team-name {
+        .remove-btn {
+            background: rgba(255, 0, 0, 0.5);
+            border: none;
             color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        .remove-team-btn {
-            background: rgba(220, 53, 69, 0.3);
-            border: 1px solid #dc3545;
-            color: #dc3545;
-            padding: 5px 12px;
-            border-radius: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
         }
 
-        .remove-team-btn:hover {
-            background: rgba(220, 53, 69, 0.5);
-        }
-
-        .add-team-btn {
-            width: 100%;
-            padding: 15px;
-            background: rgba(40, 167, 69, 0.2);
-            border: 2px dashed rgba(40, 167, 69, 0.5);
-            border-radius: 10px;
-            color: #28a745;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-        }
-
-        .add-team-btn:hover {
-            background: rgba(40, 167, 69, 0.3);
-            border-color: #28a745;
-        }
-
-        .calculate-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, var(--primary-color), #8a2be2);
+        .btn {
+            padding: 8px 20px;
+            background: var(--primary-color);
+            color: white;
             border: none;
             border-radius: 50px;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 0, 255, 0.4);
-            margin-top: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: var(--transition);
+            margin-right: 8px;
         }
 
-        .calculate-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(102, 0, 255, 0.6);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 0, 255, 0.5);
         }
 
-        .result-section {
-            margin-top: 40px;
+        .btn-secondary {
+            background: rgba(102, 0, 255, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #3d8e3d, #5cb85c);
+        }
+
+        .btn-small {
+            padding: 5px 12px;
+            font-size: 0.75rem;
+        }
+
+        .file-upload {
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .file-upload input[type="file"] {
             display: none;
         }
 
-        .result-section.show {
-            display: block;
-            animation: fadeInUp 0.5s ease;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .result-title {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 25px;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(102, 0, 255, 0.5);
-        }
-
-        .ranking-table {
-            width: 100%;
-            background: rgba(30, 30, 50, 0.7);
+        .bracket-container {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
             border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid rgba(102, 0, 255, 0.3);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
         }
 
-        .ranking-header {
-            background: linear-gradient(135deg, var(--primary-color), #8a2be2);
-            padding: 15px;
-            display: grid;
-            grid-template-columns: 60px 1fr 100px 100px;
-            gap: 15px;
-            font-weight: bold;
-            color: white;
-        }
-
-        .ranking-row {
-            padding: 15px;
-            display: grid;
-            grid-template-columns: 60px 1fr 100px 100px;
-            gap: 15px;
-            align-items: center;
-            border-bottom: 1px solid rgba(102, 0, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .ranking-row:hover {
-            background: rgba(102, 0, 255, 0.1);
-        }
-
-        .ranking-row:last-child {
-            border-bottom: none;
-        }
-
-        .rank-number {
+        .bracket-container h2 {
             font-size: 1.5rem;
-            font-weight: bold;
+            margin-bottom: 20px;
+            color: white;
+            text-shadow: 0 0 8px var(--primary-color);
             text-align: center;
-            color: var(--primary-color);
-            text-shadow: 0 0 10px rgba(102, 0, 255, 0.5);
         }
 
-        .rank-number.gold { color: #ffd700; }
-        .rank-number.silver { color: #c0c0c0; }
-        .rank-number.bronze { color: #cd7f32; }
+        .bracket-scroll {
+            display: flex;
+            gap: 30px;
+            padding: 20px 0;
+            min-width: max-content;
+        }
 
-        .team-info {
+        .round {
+            display: flex;
+            flex-direction: column;
+            min-width: 250px;
+        }
+
+        .round-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+            background: rgba(102, 0, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .match-card {
+            background: rgba(30, 30, 50, 0.8);
+            border: 2px solid rgba(102, 0, 255, 0.4);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .match-card.locked {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .match-title {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .team-display {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .team-display:hover {
+            background: rgba(0, 0, 0, 0.6);
+            border-left-color: var(--secondary-color);
+        }
+
+        .team-display.selected {
+            border-left-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .team-display.pending {
+            opacity: 0.3;
+        }
+
+        .team-name {
+            font-size: 0.95rem;
+            font-weight: bold;
             color: white;
+            margin-bottom: 6px;
+        }
+
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .member-tag {
+            background: rgba(102, 0, 255, 0.3);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .strength-indicator {
+            display: inline-block;
+            margin-left: 6px;
+            color: #ffd700;
+            font-size: 0.8rem;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: linear-gradient(45deg, #3d8e3d, #5cb85c);
+        }
+
+        .pending-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #aaa;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 2px dashed rgba(102, 0, 255, 0.3);
+        }
+
+        .stats-panel {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-panel h3 {
+            color: white;
+            margin-bottom: 12px;
             font-size: 1.1rem;
         }
 
-        .points {
-            color: #e0d6ff;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .wins {
-            color: #28a745;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .back-home-btn {
-            position: fixed;
-            top: 30px;
-            left: 30px;
-            background: var(--primary-color);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
+        .stat-item {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            z-index: 1000;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(102, 0, 255, 0.3);
+            font-size: 0.85rem;
         }
 
-        .back-home-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(102, 0, 255, 0.6);
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #ff6b6b;
+            font-size: 0.85rem;
         }
 
         @media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 2rem;
+            .mode-selector {
+                grid-template-columns: 1fr;
             }
 
-            .calculator-wrapper {
-                padding: 25px;
+            .player-list {
+                grid-template-columns: 1fr;
             }
 
-            .ranking-header,
-            .ranking-row {
-                grid-template-columns: 40px 1fr 80px;
-                gap: 10px;
-                font-size: 0.9rem;
+            .header h1 {
+                font-size: 1.5rem;
             }
 
-            .wins {
-                display: none;
-            }
-
-            .back-home-btn {
-                top: 20px;
-                left: 20px;
-                padding: 10px 20px;
-                font-size: 0.9rem;
+            .round {
+                min-width: 220px;
             }
         }
     </style>
 </head>
 <body>
-    <a href="../index.html" class="back-home-btn">
-        <i class="fas fa-home"></i>
-        <span>返回首页</span>
-    </a>
+    <div class="container">
+        <a href="../index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> 返回主页
+        </a>
 
-    <div class="page-container">
-        <div class="page-header">
+        <div class="header">
             <h1><i class="fas fa-trophy"></i> 赛制计算器</h1>
-            <p>计算积分制和淘汰制比赛的排名</p>
+            <p>TheFinals单败淘汰制赛程管理</p>
+            <div style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                    <input type="checkbox" id="strictMode" checked onchange="toggleStrictMode()" style="width: 18px; height: 18px; cursor: pointer;">
+                    <span>严格模式 (队伍数必须为4的倍数)</span>
+                </label>
+            </div>
         </div>
 
-        <div class="calculator-wrapper">
-            <div class="mode-selector">
-                <button class="mode-btn active" onclick="switchMode('points')">
-                    <i class="fas fa-star"></i><br>积分制
-                </button>
-                <button class="mode-btn" onclick="switchMode('elimination')">
-                    <i class="fas fa-skull-crossbones"></i><br>淘汰制
-                </button>
-                <button class="mode-btn" onclick="switchMode('roundrobin')">
-                    <i class="fas fa-sync-alt"></i><br>循环赛
-                </button>
+        <div class="mode-selector">
+            <div class="mode-card active" onclick="selectMode('team')">
+                <h3><i class="fas fa-users"></i> 队伍模式</h3>
+                <p>预编辑队伍名称和队员</p>
             </div>
-
-            <!-- 积分制 -->
-            <div id="pointsMode" class="input-section active">
-                <div id="teamsContainer">
-                    <div class="team-input">
-                        <div class="team-header">
-                            <span class="team-name">队伍 1</span>
-                        </div>
-                        <div class="input-row">
-                            <input type="text" placeholder="队伍名称" class="team-name-input" value="Team Alpha">
-                            <input type="number" placeholder="胜场" class="wins-input" value="5">
-                            <input type="number" placeholder="负场" class="losses-input" value="2">
-                            <input type="number" placeholder="击杀数" class="kills-input" value="45">
-                        </div>
-                    </div>
-                </div>
-                <button class="add-team-btn" onclick="addTeam()">
-                    <i class="fas fa-plus"></i> 添加队伍
-                </button>
-                <button class="calculate-btn" onclick="calculatePoints()">
-                    <i class="fas fa-calculator"></i> 计算排名
-                </button>
+            <div class="mode-card" onclick="selectMode('player')">
+                <h3><i class="fas fa-user"></i> 选手模式</h3>
+                <p>添加选手，自动平衡实力分队</p>
             </div>
+        </div>
 
-            <!-- 淘汰制 -->
-            <div id="eliminationMode" class="input-section">
+        <!-- 队伍模式输入 -->
+        <div id="teamMode" class="input-section">
+            <h2><i class="fas fa-users-cog"></i> 添加队伍</h2>
+            <div class="team-input">
                 <div class="input-group">
-                    <label><i class="fas fa-users"></i> 参赛队伍数量</label>
-                    <select id="teamCount" onchange="generateBracket()">
-                        <option value="4">4 队</option>
-                        <option value="8" selected>8 队</option>
-                        <option value="16">16 队</option>
-                        <option value="32">32 队</option>
-                    </select>
+                    <label>队伍名称</label>
+                    <input type="text" id="teamName" placeholder="输入队伍名称">
                 </div>
                 <div class="input-group">
-                    <label><i class="fas fa-info-circle"></i> 赛制信息</label>
-                    <div id="bracketInfo" style="color: #e0d6ff; padding: 15px; background: rgba(30, 30, 50, 0.5); border-radius: 10px;">
-                        8队淘汰制：需要进行3轮比赛<br>
-                        - 第1轮（四分之一决赛）：4场<br>
-                        - 第2轮（半决赛）：2场<br>
-                        - 第3轮（决赛）：1场
-                    </div>
+                    <label>队员名称</label>
+                    <input type="text" id="memberName" placeholder="输入队员名称后按回车">
                 </div>
+                <div class="player-list" id="teamMembersList"></div>
+                <button class="btn btn-small" onclick="addTeam()">添加队伍</button>
+                <button class="btn btn-secondary btn-small" onclick="document.getElementById('teamFileInput').click()">
+                    <i class="fas fa-upload"></i> 批量上传
+                </button>
+                <input type="file" id="teamFileInput" accept=".txt,.json,.csv" onchange="uploadTeamsFile(event)" style="display: none;">
             </div>
+            <div id="teamsList"></div>
+            <button class="btn btn-success" onclick="generateBracket()">
+                <i class="fas fa-play"></i> 生成赛程
+            </button>
+            <div id="teamError" class="error-message hidden"></div>
+        </div>
 
-            <!-- 循环赛 -->
-            <div id="roundrobinMode" class="input-section">
+        <!-- 选手模式输入 -->
+        <div id="playerMode" class="input-section hidden">
+            <h2><i class="fas fa-user-plus"></i> 添加选手</h2>
+            <div class="player-input">
                 <div class="input-group">
-                    <label><i class="fas fa-users"></i> 参赛队伍数量</label>
-                    <input type="number" id="rrTeamCount" value="6" min="2" max="20" onchange="calculateRoundRobin()">
+                    <label>选手名称</label>
+                    <input type="text" id="playerName" placeholder="输入选手名称">
                 </div>
                 <div class="input-group">
-                    <label><i class="fas fa-redo"></i> 循环次数</label>
-                    <select id="roundCount" onchange="calculateRoundRobin()">
-                        <option value="1" selected>单循环</option>
-                        <option value="2">双循环</option>
-                        <option value="3">三循环</option>
-                    </select>
+                    <label>实力值 (1-100)</label>
+                    <input type="number" id="playerStrength" min="1" max="100" value="50" placeholder="输入实力值">
                 </div>
-                <div id="rrResult" style="margin-top: 20px; color: #e0d6ff; padding: 20px; background: rgba(30, 30, 50, 0.7); border-radius: 15px; border: 1px solid rgba(102, 0, 255, 0.3);"></div>
+                <button class="btn btn-small" onclick="addPlayer()">添加选手</button>
+                <button class="btn btn-secondary btn-small" onclick="document.getElementById('playerFileInput').click()">
+                    <i class="fas fa-upload"></i> 批量上传
+                </button>
+                <input type="file" id="playerFileInput" accept=".txt,.json,.csv" onchange="uploadPlayersFile(event)" style="display: none;">
             </div>
+            <div id="playersList"></div>
+            <button class="btn btn-success" onclick="autoGenerateTeams()">
+                <i class="fas fa-magic"></i> 自动分队并生成赛程
+            </button>
+            <div id="playerError" class="error-message hidden"></div>
+        </div>
 
-            <div class="result-section" id="resultSection">
-                <div class="result-title">
-                    <i class="fas fa-medal"></i> 最终排名
-                </div>
-                <div class="ranking-table">
-                    <div class="ranking-header">
-                        <div>排名</div>
-                        <div>队伍</div>
-                        <div>积分</div>
-                        <div class="wins">胜场</div>
-                    </div>
-                    <div id="rankingBody"></div>
+        <!-- 赛程显示 -->
+        <div id="bracketDisplay" class="hidden">
+            <div class="bracket-container">
+                <h2><i class="fas fa-sitemap"></i> 比赛赛程</h2>
+                <div class="bracket-scroll" id="bracketContent"></div>
+                <div class="stats-panel">
+                    <h3><i class="fas fa-chart-bar"></i> 赛事统计</h3>
+                    <div id="statsContent"></div>
                 </div>
             </div>
+            <button class="btn btn-secondary" onclick="resetTournament()" style="margin-top: 15px;">
+                <i class="fas fa-redo"></i> 重新开始
+            </button>
         </div>
     </div>
 
     <script>
-        let currentMode = 'points';
-        let teamCounter = 1;
+        let currentMode = 'team';
+        let teams = [];
+        let currentTeamMembers = [];
+        let players = [];
+        let bracket = [];
+        let selectedTeams = {};
+        let strictMode = true;
 
-        function switchMode(mode) {
+        function toggleStrictMode() {
+            strictMode = document.getElementById('strictMode').checked;
+        }
+
+        function selectMode(mode) {
             currentMode = mode;
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.closest('.mode-btn').classList.add('active');
+            document.querySelectorAll('.mode-card').forEach(card => card.classList.remove('active'));
+            event.target.closest('.mode-card').classList.add('active');
             
-            document.querySelectorAll('.input-section').forEach(section => section.classList.remove('active'));
-            document.getElementById(mode + 'Mode').classList.add('active');
-            
-            document.getElementById('resultSection').classList.remove('show');
+            if (mode === 'team') {
+                document.getElementById('teamMode').classList.remove('hidden');
+                document.getElementById('playerMode').classList.add('hidden');
+            } else {
+                document.getElementById('teamMode').classList.add('hidden');
+                document.getElementById('playerMode').classList.remove('hidden');
+            }
+        }
+
+        // 队伍模式
+        document.getElementById('memberName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const name = this.value.trim();
+                if (name) {
+                    currentTeamMembers.push(name);
+                    updateTeamMembersList();
+                    this.value = '';
+                }
+            }
+        });
+
+        function updateTeamMembersList() {
+            const list = document.getElementById('teamMembersList');
+            list.innerHTML = currentTeamMembers.map((member, idx) => `
+                <div class="player-tag">
+                    ${member}
+                    <button class="remove-btn" onclick="removeTeamMember(${idx})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeTeamMember(idx) {
+            currentTeamMembers.splice(idx, 1);
+            updateTeamMembersList();
         }
 
         function addTeam() {
-            teamCounter++;
-            const container = document.getElementById('teamsContainer');
-            const teamDiv = document.createElement('div');
-            teamDiv.className = 'team-input';
-            teamDiv.innerHTML = `
-                <div class="team-header">
-                    <span class="team-name">队伍 ${teamCounter}</span>
-                    <button class="remove-team-btn" onclick="removeTeam(this)">
-                        <i class="fas fa-times"></i> 移除
-                    </button>
+            const teamName = document.getElementById('teamName').value.trim();
+            const errorDiv = document.getElementById('teamError');
+            
+            if (!teamName) {
+                showError('teamError', '请输入队伍名称');
+                return;
+            }
+            if (currentTeamMembers.length === 0) {
+                showError('teamError', '请至少添加一名队员');
+                return;
+            }
+
+            teams.push({
+                name: teamName,
+                members: [...currentTeamMembers],
+                strength: 0
+            });
+
+            updateTeamsList();
+            document.getElementById('teamName').value = '';
+            currentTeamMembers = [];
+            updateTeamMembersList();
+            hideError('teamError');
+        }
+
+        function updateTeamsList() {
+            const list = document.getElementById('teamsList');
+            list.innerHTML = teams.map((team, idx) => `
+                <div class="team-input">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="font-size: 1rem; color: white;">${team.name}</strong>
+                            <div class="team-members" style="margin-top: 6px;">
+                                ${team.members.map(m => `<span class="member-tag">${m}</span>`).join('')}
+                            </div>
+                        </div>
+                        <button class="remove-btn" onclick="removeTeam(${idx})" style="width: 25px; height: 25px; font-size: 1rem;">×</button>
+                    </div>
                 </div>
-                <div class="input-row">
-                    <input type="text" placeholder="队伍名称" class="team-name-input" value="Team ${String.fromCharCode(64 + teamCounter)}">
-                    <input type="number" placeholder="胜场" class="wins-input" value="0">
-                    <input type="number" placeholder="负场" class="losses-input" value="0">
-                    <input type="number" placeholder="击杀数" class="kills-input" value="0">
+            `).join('');
+        }
+
+        function removeTeam(idx) {
+            teams.splice(idx, 1);
+            updateTeamsList();
+        }
+
+        // 选手模式
+        function addPlayer() {
+            const name = document.getElementById('playerName').value.trim();
+            const strength = parseInt(document.getElementById('playerStrength').value);
+
+            if (!name) {
+                showError('playerError', '请输入选手名称');
+                return;
+            }
+
+            players.push({ name, strength });
+            updatePlayersList();
+            document.getElementById('playerName').value = '';
+            document.getElementById('playerStrength').value = 50;
+            hideError('playerError');
+        }
+
+        function updatePlayersList() {
+            const list = document.getElementById('playersList');
+            list.innerHTML = players.map((player, idx) => `
+                <div class="player-input" style="display: flex; justify-content: space-between; align-items: center; padding: 12px;">
+                    <div>
+                        <strong style="color: white; font-size: 0.95rem;">${player.name}</strong>
+                        <span class="strength-indicator">⭐ ${player.strength}</span>
+                    </div>
+                    <button class="remove-btn" onclick="removePlayer(${idx})" style="width: 25px; height: 25px; font-size: 1rem;">×</button>
                 </div>
-            `;
-            container.appendChild(teamDiv);
+            `).join('');
         }
 
-        function removeTeam(btn) {
-            btn.closest('.team-input').remove();
+        function removePlayer(idx) {
+            players.splice(idx, 1);
+            updatePlayersList();
         }
 
-        function calculatePoints() {
-            const teams = [];
-            document.querySelectorAll('.team-input').forEach(teamDiv => {
-                const name = teamDiv.querySelector('.team-name-input').value;
-                const wins = parseInt(teamDiv.querySelector('.wins-input').value) || 0;
-                const losses = parseInt(teamDiv.querySelector('.losses-input').value) || 0;
-                const kills = parseInt(teamDiv.querySelector('.kills-input').value) || 0;
+        function uploadTeamsFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                parseTeamsFile(content, file.name);
+            };
+            reader.readAsText(file);
+            
+            // 重置input以允许重复上传同一文件
+            event.target.value = '';
+        }
+
+        function parseTeamsFile(content, filename) {
+            try {
+                const lines = content.trim().split('\n');
+                let addedCount = 0;
                 
-                // 积分计算：胜场3分 + 击杀数
-                const points = wins * 3 + kills;
+                lines.forEach(line => {
+                    line = line.trim();
+                    if (!line) return;
+                    
+                    // 格式: 队伍名,队员1,队员2,队员3...
+                    const parts = line.split(',').map(p => p.trim());
+                    if (parts.length >= 2) {
+                        teams.push({
+                            name: parts[0],
+                            members: parts.slice(1),
+                            strength: 0
+                        });
+                        addedCount++;
+                    }
+                });
                 
-                teams.push({ name, wins, losses, kills, points });
-            });
-
-            // 按积分排序
-            teams.sort((a, b) => {
-                if (b.points !== a.points) return b.points - a.points;
-                if (b.wins !== a.wins) return b.wins - a.wins;
-                return b.kills - a.kills;
-            });
-
-            // 显示结果
-            displayRanking(teams);
+                updateTeamsList();
+                hideError('teamError');
+                
+                if (addedCount > 0) {
+                    alert(`成功添加 ${addedCount} 支队伍！`);
+                } else {
+                    showError('teamError', '文件中没有找到有效的队伍数据');
+                }
+            } catch (error) {
+                console.error('解析错误:', error);
+                showError('teamError', '文件格式错误，请使用格式：队伍名,队员1,队员2');
+            }
         }
 
-        function displayRanking(teams) {
-            const rankingBody = document.getElementById('rankingBody');
-            rankingBody.innerHTML = '';
+        function uploadPlayersFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-            teams.forEach((team, index) => {
-                const rank = index + 1;
-                let rankClass = '';
-                if (rank === 1) rankClass = 'gold';
-                else if (rank === 2) rankClass = 'silver';
-                else if (rank === 3) rankClass = 'bronze';
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                parsePlayersFile(content, file.name);
+            };
+            reader.readAsText(file);
+            
+            // 重置input以允许重复上传同一文件
+            event.target.value = '';
+        }
 
-                const row = document.createElement('div');
-                row.className = 'ranking-row';
-                row.innerHTML = `
-                    <div class="rank-number ${rankClass}">#${rank}</div>
-                    <div class="team-info">${team.name}</div>
-                    <div class="points">${team.points}分</div>
-                    <div class="wins">${team.wins}胜</div>
-                `;
-                rankingBody.appendChild(row);
+        function parsePlayersFile(content, filename) {
+            try {
+                const lines = content.trim().split('\n');
+                let addedCount = 0;
+                
+                lines.forEach(line => {
+                    line = line.trim();
+                    if (!line) return;
+                    
+                    // 格式: 选手名,实力值
+                    const parts = line.split(',').map(p => p.trim());
+                    if (parts.length >= 1) {
+                        const name = parts[0];
+                        const strength = parts.length >= 2 ? parseInt(parts[1]) || 50 : 50;
+                        players.push({ name, strength });
+                        addedCount++;
+                    }
+                });
+                
+                updatePlayersList();
+                hideError('playerError');
+                
+                if (addedCount > 0) {
+                    alert(`成功添加 ${addedCount} 名选手！`);
+                } else {
+                    showError('playerError', '文件中没有找到有效的选手数据');
+                }
+            } catch (error) {
+                console.error('解析错误:', error);
+                showError('playerError', '文件格式错误，请使用格式：选手名,实力值');
+            }
+        }
+
+        function autoGenerateTeams() {
+            if (players.length < 2) {
+                showError('playerError', '至少需要2名选手');
+                return;
+            }
+
+            // 计算合适的队伍数量
+            let numTeams = Math.max(2, Math.ceil(players.length / 3));
+            
+            // 严格模式下，队伍数必须是4的倍数
+            if (strictMode && numTeams > 2 && numTeams % 4 !== 0) {
+                numTeams = Math.ceil(numTeams / 4) * 4;
+            }
+
+            const playersPerTeam = Math.floor(players.length / numTeams);
+            
+            if (players.length % numTeams !== 0) {
+                showError('playerError', `当前${players.length}名选手无法平均分配，请添加${numTeams - (players.length % numTeams)}名选手使总数达到${numTeams * playersPerTeam}人`);
+                return;
+            }
+
+            const sortedPlayers = [...players].sort((a, b) => b.strength - a.strength);
+            
+            teams = [];
+            for (let i = 0; i < numTeams; i++) {
+                teams.push({
+                    name: `队伍 ${i + 1}`,
+                    members: [],
+                    strength: 0
+                });
+            }
+
+            let teamIndex = 0;
+            let direction = 1;
+            
+            sortedPlayers.forEach(player => {
+                teams[teamIndex].members.push(player.name);
+                teams[teamIndex].strength += player.strength;
+                
+                teamIndex += direction;
+                if (teamIndex >= numTeams || teamIndex < 0) {
+                    direction *= -1;
+                    teamIndex += direction;
+                }
             });
 
-            document.getElementById('resultSection').classList.add('show');
-            document.getElementById('resultSection').scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'nearest' 
+            teams.forEach(team => {
+                if (team.members.length > 0) {
+                    team.strength = Math.round(team.strength / team.members.length);
+                }
             });
+
+            hideError('playerError');
+            generateBracket();
         }
 
         function generateBracket() {
-            const teamCount = parseInt(document.getElementById('teamCount').value);
-            const rounds = Math.log2(teamCount);
-            const info = document.getElementById('bracketInfo');
-            
-            let infoText = `${teamCount}队淘汰制：需要进行${rounds}轮比赛<br>`;
-            
-            for (let i = 0; i < rounds; i++) {
-                const matchesInRound = teamCount / Math.pow(2, i + 1);
-                const roundNames = ['决赛', '半决赛', '四分之一决赛', '八分之一决赛', '十六分之一决赛'];
-                const roundName = i < rounds - roundNames.length ? `第${rounds - i}轮` : roundNames[rounds - i - 1];
-                infoText += `- 第${i + 1}轮（${roundName}）：${matchesInRound}场<br>`;
+            if (teams.length < 2) {
+                showError('teamError', '至少需要2支队伍');
+                return;
             }
+
+            // 严格模式下检查队伍数量
+            if (strictMode && teams.length > 2 && teams.length % 4 !== 0) {
+                showError('teamError', `严格模式下队伍数量必须是4的倍数(当前${teams.length}支)，请添加${4 - (teams.length % 4)}支队伍，或关闭严格模式`);
+                return;
+            }
+
+            bracket = generateTournamentBracket([...teams]);
+            selectedTeams = {};
+            displayBracket();
             
-            info.innerHTML = infoText;
+            document.getElementById('bracketDisplay').classList.remove('hidden');
+            document.getElementById('bracketDisplay').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function calculateRoundRobin() {
-            const teamCount = parseInt(document.getElementById('rrTeamCount').value);
-            const roundCount = parseInt(document.getElementById('roundCount').value);
-            
-            const matchesPerRound = (teamCount * (teamCount - 1)) / 2;
-            const totalMatches = matchesPerRound * roundCount;
-            const totalRounds = teamCount - 1;
-            
-            const result = document.getElementById('rrResult');
-            result.innerHTML = `
-                <div style="font-size: 1.1rem;">
-                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(102, 0, 255, 0.1); border-radius: 10px;">
-                        <i class="fas fa-users"></i> <strong>参赛队伍：</strong> ${teamCount} 队
-                    </div>
-                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(102, 0, 255, 0.1); border-radius: 10px;">
-                        <i class="fas fa-calendar-alt"></i> <strong>比赛轮次：</strong> ${totalRounds} 轮
-                    </div>
-                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(102, 0, 255, 0.1); border-radius: 10px;">
-                        <i class="fas fa-futbol"></i> <strong>单循环场次：</strong> ${matchesPerRound} 场
-                    </div>
-                    <div style="padding: 15px; background: linear-gradient(135deg, rgba(102, 0, 255, 0.2), rgba(138, 43, 226, 0.2)); border-radius: 10px; border: 1px solid var(--primary-color);">
-                        <i class="fas fa-trophy"></i> <strong>总比赛场次：</strong> ${totalMatches} 场
-                    </div>
+        function generateTournamentBracket(allTeams) {
+            const rounds = [];
+            let currentTeams = [...allTeams];
+
+            // 根据队伍数量动态生成赛制
+            while (currentTeams.length > 1) {
+                const teamCount = currentTeams.length;
+                const isFinal = teamCount === 2;
+                const teamsPerMatch = isFinal ? 2 : 4;
+                
+                let roundName = '';
+                if (isFinal) {
+                    roundName = '决赛 (1v1)';
+                } else if (teamCount === 4) {
+                    roundName = '4进2 (半决赛)';
+                } else if (teamCount === 8) {
+                    roundName = '8进4';
+                } else if (teamCount === 16) {
+                    roundName = '16进8';
+                } else {
+                    roundName = `${teamCount}进${teamCount / 2}`;
+                }
+
+                const matches = [];
+                for (let j = 0; j < currentTeams.length; j += teamsPerMatch) {
+                    matches.push({
+                        matchNumber: Math.floor(j / teamsPerMatch) + 1,
+                        teams: currentTeams.slice(j, j + teamsPerMatch),
+                        roundIndex: rounds.length,
+                        confirmed: false
+                    });
+                }
+
+                rounds.push({
+                    name: roundName,
+                    matches: matches,
+                    teamsPerMatch: teamsPerMatch
+                });
+
+                // 下一轮队伍数量
+                currentTeams = new Array(Math.ceil(currentTeams.length / teamsPerMatch) * (isFinal ? 1 : 2));
+            }
+
+            return rounds;
+        }
+
+        function toggleTeamSelection(roundIdx, matchIdx, teamIdx) {
+            const key = `${roundIdx}-${matchIdx}`;
+            if (!selectedTeams[key]) {
+                selectedTeams[key] = [];
+            }
+
+            const match = bracket[roundIdx].matches[matchIdx];
+            const maxSelections = roundIdx === bracket.length - 1 ? 1 : 2;
+
+            const idx = selectedTeams[key].indexOf(teamIdx);
+            if (idx > -1) {
+                selectedTeams[key].splice(idx, 1);
+            } else {
+                if (selectedTeams[key].length < maxSelections) {
+                    selectedTeams[key].push(teamIdx);
+                }
+            }
+
+            displayBracket();
+        }
+
+        function confirmMatch(roundIdx, matchIdx) {
+            const key = `${roundIdx}-${matchIdx}`;
+            const match = bracket[roundIdx].matches[matchIdx];
+            const maxSelections = roundIdx === bracket.length - 1 ? 1 : 2;
+
+            if (!selectedTeams[key] || selectedTeams[key].length !== maxSelections) {
+                alert(`请选择${maxSelections}支晋级队伍`);
+                return;
+            }
+
+            match.confirmed = true;
+            const advancingTeams = selectedTeams[key].map(idx => match.teams[idx]);
+
+            // 更新下一轮
+            if (roundIdx < bracket.length - 1) {
+                const nextRound = bracket[roundIdx + 1];
+                const nextMatchIdx = Math.floor(matchIdx / 2);
+                
+                if (!nextRound.matches[nextMatchIdx]) {
+                    nextRound.matches[nextMatchIdx] = {
+                        matchNumber: nextMatchIdx + 1,
+                        teams: [],
+                        roundIndex: roundIdx + 1,
+                        confirmed: false
+                    };
+                }
+
+                nextRound.matches[nextMatchIdx].teams.push(...advancingTeams);
+            }
+
+            displayBracket();
+        }
+
+        function displayBracket() {
+            const content = document.getElementById('bracketContent');
+            content.innerHTML = bracket.map((round, roundIdx) => `
+                <div class="round">
+                    <div class="round-title">${round.name}</div>
+                    ${round.matches.map((match, matchIdx) => {
+                        const key = `${roundIdx}-${matchIdx}`;
+                        const isLocked = roundIdx > 0 && !bracket[roundIdx - 1].matches.every(m => m.confirmed);
+                        const isPending = !match.teams || match.teams.length === 0;
+                        
+                        if (isPending) {
+                            return `
+                                <div class="match-card">
+                                    <div class="match-title">比赛 ${match.matchNumber}</div>
+                                    <div class="pending-message">
+                                        <i class="fas fa-hourglass-half"></i><br>
+                                        等待上一轮确认
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        return `
+                            <div class="match-card ${isLocked ? 'locked' : ''} ${match.confirmed ? 'locked' : ''}">
+                                <div class="match-title">比赛 ${match.matchNumber}</div>
+                                ${match.teams.map((team, teamIdx) => {
+                                    const isSelected = selectedTeams[key]?.includes(teamIdx);
+                                    return `
+                                        <div class="team-display ${isSelected ? 'selected' : ''} ${match.confirmed ? 'locked' : ''}" 
+                                             onclick="${!match.confirmed && !isLocked ? `toggleTeamSelection(${roundIdx}, ${matchIdx}, ${teamIdx})` : ''}">
+                                            <div class="team-name">
+                                                ${isSelected ? '✓ ' : ''}${team.name}
+                                                ${team.strength > 0 ? `<span class="strength-indicator">⭐ ${team.strength}</span>` : ''}
+                                            </div>
+                                            <div class="team-members">
+                                                ${team.members.map(m => `<span class="member-tag">${m}</span>`).join('')}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                                ${!match.confirmed && !isLocked ? `
+                                    <button class="btn btn-small confirm-btn" onclick="confirmMatch(${roundIdx}, ${matchIdx})">
+                                        <i class="fas fa-check"></i> 确认晋级
+                                    </button>
+                                ` : match.confirmed ? `
+                                    <div style="text-align: center; margin-top: 10px; color: #5cb85c; font-size: 0.85rem;">
+                                        <i class="fas fa-check-circle"></i> 已确认
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('')}
                 </div>
+            `).join('');
+
+            // 更新统计
+            const stats = document.getElementById('statsContent');
+            const totalTeams = teams.length;
+            const totalPlayers = teams.reduce((sum, t) => sum + t.members.length, 0);
+            const avgStrength = teams.filter(t => t.strength > 0).reduce((sum, t) => sum + t.strength, 0) / teams.filter(t => t.strength > 0).length || 0;
+            const confirmedMatches = bracket.reduce((sum, round) => sum + round.matches.filter(m => m.confirmed).length, 0);
+            const totalMatches = bracket.reduce((sum, round) => sum + round.matches.length, 0);
+
+            stats.innerHTML = `
+                <div class="stat-item">
+                    <span>参赛队伍数</span>
+                    <strong>${totalTeams}</strong>
+                </div>
+                <div class="stat-item">
+                    <span>参赛选手数</span>
+                    <strong>${totalPlayers}</strong>
+                </div>
+                <div class="stat-item">
+                    <span>比赛轮数</span>
+                    <strong>${bracket.length}</strong>
+                </div>
+                <div class="stat-item">
+                    <span>比赛进度</span>
+                    <strong>${confirmedMatches}/${totalMatches}</strong>
+                </div>
+                ${avgStrength > 0 ? `
+                <div class="stat-item">
+                    <span>平均队伍实力</span>
+                    <strong>${avgStrength.toFixed(1)}</strong>
+                </div>
+                ` : ''}
             `;
         }
 
-        // 初始化
-        generateBracket();
-        calculateRoundRobin();
+        function showError(id, message) {
+            const errorDiv = document.getElementById(id);
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function hideError(id) {
+            const errorDiv = document.getElementById(id);
+            errorDiv.classList.add('hidden');
+        }
+
+        function resetTournament() {
+            teams = [];
+            players = [];
+            currentTeamMembers = [];
+            bracket = [];
+            selectedTeams = {};
+            updateTeamsList();
+            updatePlayersList();
+            updateTeamMembersList();
+            hideError('teamError');
+            hideError('playerError');
+            document.getElementById('bracketDisplay').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     </script>
 </body>
 </html>
