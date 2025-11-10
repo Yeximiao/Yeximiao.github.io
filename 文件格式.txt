@@ -1,4 +1,4 @@
-your-website/
+my-website/
 ├── index.html
 ├── css/
 │   ├── style.css       # 全局基础样式
@@ -7,4 +7,7 @@ your-website/
 ├── images/
 │   ├── avatar1.jpg         # 头像
 │   ├── background1.jpg         # 背景图
+├── pages/
+│   ├── sensitivity-calculator.html         # 开镜灵敏度计算器
+│   ├── tournament-calculator.html         # 赛制计算器
 └──
